@@ -1,0 +1,632 @@
+<div class="grid">
+    <div class="col-12 md:col-12 lg:col-12 xl:col-12 mb-3">
+        <p-panel *ngIf="!loadingPage"
+                 class="h-full mb-3"
+                 [toggleable]="true">
+            <ng-template #header>
+                <div class="flex items-center mt-2">
+                    <h5 >Datos generales</h5>
+                </div>
+            </ng-template>
+            <form [formGroup]="resourceForm" class="grid form-grid" >
+                <div class="field col-12">
+                    <label for="name">Titulo</label>
+                    <input type="text"
+                           pInputText
+                           formControlName="title"
+                           class="w-full" />
+                    <div *ngIf="resourceForm.get('title')?.invalid && resourceForm.get('title')?.dirty || resourceForm.get('title')?.touched">
+                        <p-message  *ngIf="resourceForm.hasError('required','title')"
+                                    severity="error"
+                                    variant="simple"
+                                    size="small">El titulo es requerido
+                        </p-message>
+                    </div>
+                </div>
+
+                <div class="field col-6">
+                    <label for="areaId">Area</label>
+                    <p-select [options]="areas"
+                              optionLabel="name"
+                              appendTo="body"
+                              formControlName="areaId"
+                              optionValue="areaId"
+                              placeholder="Seleccione area"
+                              class="w-full" />
+                    <div *ngIf="resourceForm.get('areaId')?.invalid && resourceForm.get('areaId')?.dirty || resourceForm.get('areaId')?.touched">
+                        <p-message  *ngIf="resourceForm.hasError('required','areaId')"
+                                    severity="error"
+                                    variant="simple"
+                                    size="small">
+                            Selecione area
+                        </p-message>
+                    </div>
+                </div>
+
+                <div class="field col-6">
+                    <label for="typeId">Tipo de recurso</label>
+                    <p-select [options]="resourceTypes"
+                              appendTo="body"
+                              optionLabel="name"
+                              optionValue="typeId"
+                              formControlName="typeId"
+                              placeholder="Seleccione tipo"
+                              class="w-full" >
+                    </p-select>
+                    <div *ngIf="resourceForm.get('typeId')?.invalid && resourceForm.get('typeId')?.dirty || resourceForm.get('typeId')?.touched">
+                        <p-message  *ngIf="resourceForm.hasError('required','typeId')"
+                                    severity="error"
+                                    variant="simple"
+                                    size="small">
+                            Selecione tipo de recurso
+                        </p-message>
+                    </div>
+                </div>
+                <div class="col-12 field">
+                    <label for="description">Descripcion</label>
+                    <textarea pTextarea
+                              class="w-full"
+                              formControlName="description"
+                              autoResize
+                              rows="10">
+                    </textarea>
+                    <div *ngIf="resourceForm.get('description')?.invalid && resourceForm.get('description')?.dirty || resourceForm.get('description')?.touched">
+                        <p-message  *ngIf="resourceForm.hasError('required','descrioption')"
+                                    severity="error"
+                                    variant="simple"
+                                    size="small">
+                            La descripcion es requeridas
+                        </p-message>
+                    </div>
+                </div>
+
+
+                <div class="col-12">
+                    <p-message *ngIf="selectedResource.state?.code === resourceStateEnums.Rejected"
+                               severity="error"
+                               text="Este recurso no fue aprobado parasu publicacion." >
+                    </p-message>
+                </div>
+            </form>
+            <ng-template #footer>
+                <div class="flex flex-wrap justify-end">
+                    <p-button   *ngIf="selectedResource.state?.code === resourceStateEnums.Created "
+                                (onClick)="updateResource()"
+                                [outlined]="true"
+                                [disabled]="!resourceForm.valid || httpLoading"
+                                icon="pi pi-save"
+                                label="Actualizar"
+                                class="mr-3"
+                                severity="primary"  />
+                    <p-button   [disabled]="!(selectedResource !== null && resourceFiles.length > 0 && authors.length> 0 && versions.length > 0)"
+                                *ngIf="selectedResource.state?.code === resourceStateEnums.Created "
+                                (onClick)="updateResourceState()"
+                                pTooltip="Enviar recurso para verificacion y publicacion"
+                                tooltipPosition="left"
+                                label="Enviar a revision"
+                                icon="pi pi-send"/>
+                </div>
+            </ng-template>
+        </p-panel>
+        <p-panel *ngIf="loadingPage" [toggleable]="true">
+            <ng-template #header>
+                <div class="flex items-center mt-2">
+                    <h5 >Datos generales</h5>
+                </div>
+            </ng-template>
+            <app-card-skeleton></app-card-skeleton>
+
+        </p-panel>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-6 xl:col-6 mb-3" >
+        <p-panel *ngIf="!loadingAuthors"
+                         class="mb-3 h-full"
+                         [toggleable]="true">
+                    <ng-template #header>
+                        <div class="flex items-center gap-2 mt-2">
+                            <h5>Autores</h5>
+                        </div>
+                    </ng-template>
+                    <p-table *ngIf="authors.length > 0 && !loadingAuthors"
+                             [value]="authors"
+                             [tableStyle]="{ 'min-width': '50rem' }">
+                        <ng-template #header>
+                            <tr>
+                                <th>Nombres</th>
+                                <th>Apellidos</th>
+                                <th>Correo</th>
+                                <th></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template #caption>
+                            <div class="flex justify-end">
+                                <p-button   (onClick)="showAuthorModal = true"
+                                            [outlined]="true"
+                                            icon="pi pi-plus"
+                                            label="Agregar autor"
+                                            severity="secondary"  />
+                            </div>
+                        </ng-template>
+                        <ng-template #body let-entity>
+                            <tr>
+                                <td>{{ entity.firstName }}</td>
+                                <td>{{ entity.lastName }}</td>
+                                <td>{{ entity.email }}</td>
+                                <td>
+                                    <p-button   (onClick)="deleteAuthor(entity)"
+                                                [outlined]="true"
+                                                [rounded]="true"
+                                                variant="text"
+                                                icon="pi pi-trash"
+                                                severity="danger"  />
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                    <div class="flex  flex-col" *ngIf="!loadingAuthors && authors.length === 0">
+                        <div class="flex justify-center">No se han encontrado authores</div>
+                        <div class="flex justify-center mt-3">
+                            <p-button   (onClick)="showAuthorModal = true"
+                                        variant="text"
+                                        icon="pi pi-plus"
+                                        label="Agregar autor"
+                                        severity="secondary"  />
+                        </div>
+                    </div>
+
+    </p-panel>
+        <p-panel *ngIf="loadingAuthors" [toggleable]="true">
+            <ng-template #header>
+                <div class="flex items-center gap-2 mt-2">
+                    <h5>Autores</h5>
+                </div>
+            </ng-template>
+            <app-card-skeleton></app-card-skeleton>
+        </p-panel>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-6 xl:col-6 mb-3">
+
+        <p-panel *ngIf="!loadingFiles"
+                 [toggleable]="true">
+            <ng-template #header>
+                <div class="flex items-center align-items-center cursor-pointer  mt-3 ">
+                    <h4 class="text-center m-0 mr-2" > Archivos
+                    </h4>
+                    <lucide-icon    [size]="16"
+                                    pTooltip="Agrega los archivos del recurso, cada uno tiene un maximo de 100MB"
+                                     name="circle-question-mark"/>
+                </div>
+            </ng-template>
+            <div class="grid ">
+                <div class="col-12 border-round mt-7">
+                    <div class="w-full flex justify-end border-1 border-dashed border-round mb-2">
+                        <div class="flex align-items-center p-2 pl-3">
+                            <span *ngIf="avatar === null" class="font-medium">Agregar avatar </span>
+                            <span *ngIf="avatar !== null  && banner === null" class="font-medium text-gray-600">Agregar banner</span>
+                            <span *ngIf="avatar !== null && banner !== null" class="font-medium">Agregar imagen/video</span>
+                        </div>
+                        <div class="flex">
+                            <span (click)="showFileModalFn('avatar')"
+                                  *ngIf="avatar === null"
+                                  class="file-btn flex justify-center align-items-center text-gray-700 p-2 pl-3">
+                                <lucide-icon name="plus"></lucide-icon>
+                            </span>
+                            <span (click)="showFileModalFn('banner')"
+                                  *ngIf="avatar !== null  && banner === null"
+                                  class="file-btn flex justify-center align-items-center text-gray-700 p-2 pl-3">
+                                <lucide-icon name="plus"></lucide-icon>
+                            </span>
+                            <span (click)="showFileModalFn('media')"
+                                  *ngIf="avatar !== null && banner !== null"
+                                  class="file-btn flex justify-center align-items-center text-gray-700 p-2 pl-3">
+                                <lucide-icon name="plus"></lucide-icon>
+                            </span>
+                        </div>
+                    </div>
+                    <app-file *ngFor="let file of resourceFiles;" (removeFile)="removeResourceFile($event)"  [file]="file"></app-file>
+                </div>
+            </div>
+        </p-panel>
+        <p-panel *ngIf="loadingFiles"
+                 [toggleable]="true">
+            <ng-template #header>
+                <div class="flex items-center mt-3">
+                    <h4> Archivos </h4>
+                </div>
+            </ng-template>
+            <app-card-skeleton></app-card-skeleton>
+        </p-panel>
+    </div>
+
+    <div class="col-12 md:col-12 lg:col-12 xl:col-12 mb-3">
+        <p-panel *ngIf="!loadingVersions" [toggleable]="true">
+            <ng-template #header>
+                <div class="flex items-center mt-3">
+                    <h4> Versiones </h4>
+                </div>
+            </ng-template>
+            <div class="flex  flex-col" *ngIf="!loadingVersions && versions.length === 0">
+                <div class="flex justify-center">No se han encontrado versiones</div>
+                <div class="flex justify-center mt-3">
+                    <p-button   (onClick)="showVersionModal = true"
+                                variant="text"
+                                icon="pi pi-plus"
+                                label="Agregar version"
+                                severity="secondary"  />
+                </div>
+            </div>
+            <p-table *ngIf="versions.length > 0 && !loadingVersions"
+                     [value]="versions">
+                <ng-template #header>
+                    <tr>
+                        <th>Version</th>
+                        <th>Descripcion</th>
+                        <th>Lenguages</th>
+                        <th>Plataformas</th>
+                        <th>Dispositivos</th>
+                        <th>Archivo</th>
+                        <th>Licencia</th>
+                        <th>Creacion</th>
+                    </tr>
+                </ng-template>
+                <ng-template #caption>
+                    <div class="flex justify-end">
+                        <p-button   (onClick)="showVersionModal = true"
+                                    [outlined]="true"
+                                    icon="pi pi-plus"
+                                    label="Agregar nueva version"
+                                    severity="secondary"  />
+                    </div>
+                </ng-template>
+                <ng-template #body let-entity>
+                    <tr>
+                        <td>{{ entity.version }}</td>
+                        <td>{{ entity.description }}</td>
+                        <td>
+                            <p-tag  *ngFor="let lang of entity.langs"
+                                    class="m-1"
+                                    value="{{lang.name}}"  />
+                        </td>
+                        <td>
+                            <p-tag  *ngFor="let pl of entity.platforms"
+                                    class="m-1"
+                                    severity="info"
+                                    icon="{{pl.icon}}" value="{{pl.name}}"  />
+                        </td>
+                        <td>
+                            <p-tag  *ngFor="let dev of entity.devices"
+                                    class="m-1"
+                                    severity="secondary"
+                                    icon="{{dev.icon}}"
+                                    value="{{dev.name}}"  />
+                        </td>
+                        <td>
+                            <lucide-icon    (click)="downloadVersionFile(entity)"
+                                            name="folder-archive"
+                                            class="cursor-pointer up-download-btn font-bold"
+                                            pTooltip="Descargar comprimido"/>
+                        </td>
+                        <td>
+                            {{entity.license.name}}
+                        </td>
+
+                        <td>{{ entity.createdAt | date:'dd/MM/yyyy':'UTC-6' }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-panel>
+        <p-panel *ngIf="loadingVersions" [toggleable]="true">
+            <ng-template #header>
+                <div class="flex items-center mt-3">
+                    <h4> Versiones </h4>
+                </div>
+            </ng-template>
+            <app-card-skeleton></app-card-skeleton>
+        </p-panel>
+    </div>
+</div>
+
+<div class="grid">
+    <div class="col-12">
+        <p-dialog   header="Nuevo author"
+                    [modal]="true"
+                    (onHide)="authorForm.reset()"
+                    [draggable]="false"
+                    [(visible)]="showAuthorModal"
+                    [style]="{ width: '40rem' }">
+            <form [formGroup]="authorForm" class="grid form-grid" >
+
+                <div class="field col-6">
+                    <label for="firstName">Nombres</label>
+                    <input type="text"
+                           pInputText
+                           formControlName="firstName"
+                           class="w-full" />
+                    <div *ngIf="authorForm.get('firstName')?.invalid && authorForm.get('firstName')?.dirty || authorForm.get('firstName')?.touched">
+                        <p-message  *ngIf="authorForm.hasError('required','firstName')"
+                                    severity="error"
+                                    variant="simple"
+                                    size="small">Los nombres son requeridos
+                        </p-message>
+                    </div>
+                </div>
+
+                <div class="field col-6">
+                    <label for="firstName">Apellidos</label>
+                    <input type="text"
+                           pInputText
+                           formControlName="lastName"
+                           class="w-full" />
+                    <div *ngIf="authorForm.get('lastName')?.invalid && authorForm.get('lastName')?.dirty || authorForm.get('lastName')?.touched">
+                        <p-message  *ngIf="authorForm.hasError('required','lastName')"
+                                    severity="error"
+                                    variant="simple"
+                                    size="small">Los apellidos son requeridos
+                        </p-message>
+                    </div>
+                </div>
+
+                <div class="field col-12">
+                    <label for="firstName">Correo electronico</label>
+                    <input type="text"
+                           pInputText
+                           formControlName="email"
+                           class="w-full" />
+                    <div *ngIf="authorForm.get('email')?.invalid && authorForm.get('email')?.dirty || authorForm.get('email')?.touched">
+                        <p-message  *ngIf="authorForm.hasError('required','email')"
+                                    severity="error"
+                                    variant="simple"
+                                    size="small">El correo es requerido
+                        </p-message>
+                        <p-message  *ngIf="authorForm.hasError('email','email')"
+                                    severity="error"
+                                    variant="simple"
+                                    size="small">El formato del correo es invalido
+                        </p-message>
+                    </div>
+                </div>
+
+            </form>
+
+            <ng-template #footer>
+                <p-button   (click)="showAuthorModal = false"
+                            [outlined]="true"
+                            icon="pi pi-times"
+                            label="Cancelar"
+                            severity="secondary"  />
+                <p-button   (click)="createAuthor()"
+                            [outlined]="true"
+                            [disabled]="!authorForm.valid || httpLoading"
+                            icon="pi pi-save"
+                            label="Guardar"
+                            severity="success"  />
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog   header="Nueva version"
+                    *ngIf="!loadingVersions"
+                    [modal]="true"
+                    (onHide)="versionForms.reset()"
+                    [(visible)]="showVersionModal"
+                    [draggable]="false"
+                    [style]="{ width: '35rem' }">
+            <form [formGroup]="versionForms" class="grid form-grid">
+                <div class="field col-6">
+                    <label for="version">Version</label>
+                    <input type="text"
+                           pInputText
+                           formControlName="version"
+                           placeholder="1.0.0"
+                           class="w-full" />
+                    <div *ngIf="versionForms.get('version')?.invalid && versionForms.get('version')?.dirty || versionForms.get('version')?.touched">
+                        <p-message  *ngIf="versionForms.hasError('required','version')"
+                                    severity="error"
+                                    variant="simple"
+                                    size="small">Se debe ingresar la version
+                        </p-message>
+                    </div>
+                </div>
+
+                <div class="field col-6">
+                    <label for="version">Dispositivos</label>
+                    <p-multiselect [options]="devices"
+                                   formControlName="devices"
+                                   appendTo="body"
+                                   optionValue="deviceId"
+                                   class="w-full"
+                                   optionLabel="name"
+                                   placeholder="Seleccione">
+                        <ng-template let-entity #item>
+                            <div class="flex items-center gap-2">
+                                <i class="{{entity.icon}}" ></i>
+                                <div>{{ entity.name }}</div>
+                            </div>
+                        </ng-template>
+                        <ng-template #filter></ng-template>
+                    </p-multiselect>
+                    <div *ngIf="versionForms.get('platforms')?.invalid && versionForms.get('platforms')?.dirty || versionForms.get('platforms')?.touched">
+                        <p-message  *ngIf="versionForms.hasError('required','platforms')"
+                                    severity="error"
+                                    variant="simple"
+                                    size="small">Se ingresar un item
+                        </p-message>
+                    </div>
+                </div>
+
+                <div class="field col-6">
+                    <label for="version">Lenguages</label>
+                    <p-multiselect [options]="languages"
+                                   formControlName="langs"
+                                   appendTo="body"
+                                   optionValue="languageId"
+                                   class="w-full"
+                                   optionLabel="name"
+                                   placeholder="Seleccione">
+                        <ng-template #filter>
+
+                        </ng-template>
+                    </p-multiselect>
+                    <div *ngIf="versionForms.get('languageId')?.invalid && versionForms.get('languageId')?.dirty || versionForms.get('languageId')?.touched">
+                        <p-message  *ngIf="versionForms.hasError('required','languageId')"
+                                    severity="error"
+                                    variant="simple"
+                                    size="small">Se selecctionar almenos un item
+                        </p-message>
+                    </div>
+                </div>
+
+                <div class="field col-6">
+                    <label for="version">Plataformas</label>
+                    <p-multiselect [options]="platforms"
+                                   formControlName="platforms"
+                                   appendTo="body"
+                                   optionValue="platformId"
+                                   class="w-full"
+                                   optionLabel="name"
+                                   placeholder="Seleccione">
+                        <ng-template #filter></ng-template>
+                        <ng-template let-entity #item>
+                            <div class="flex items-center gap-2">
+                                <i class="{{entity.icon}}" ></i>
+                                <div>{{ entity.name }}</div>
+                            </div>
+                        </ng-template>
+                    </p-multiselect>
+                    <div *ngIf="versionForms.get('platforms')?.invalid && versionForms.get('platforms')?.dirty || versionForms.get('platforms')?.touched">
+                        <p-message  *ngIf="versionForms.hasError('required','platforms')"
+                                    severity="error"
+                                    variant="simple"
+                                    size="small">Se ingresar un item
+                        </p-message>
+                    </div>
+                </div>
+
+                <div class="field col-12 mb-4">
+                    <label for="area">Licencia</label>
+                    <p-select [options]="licenses"
+                              optionLabel="name"
+                              optionValue="licenseId"
+                              placeholder="Seleccione"
+                              formControlName="licenseId"
+                              appendTo="body"
+                              class="w-full" />
+                    <div *ngIf="versionForms.get('licenseId')?.invalid && versionForms.get('licenseId')?.dirty || versionForms.get('licenseId')?.touched">
+                        <p-message  *ngIf="versionForms.hasError('required','licenseId')"
+                                    severity="error"
+                                    variant="simple"
+                                    size="small">
+                            Debes selecionar licencia
+                        </p-message>
+                    </div>
+                </div>
+
+                <div class="field col-12">
+                    <label for="version">Descripcion</label>
+                    <textarea pTextarea
+                              rows="3"
+                              class="w-full"
+                              formControlName="description"></textarea>
+                    <div *ngIf="versionForms.get('description')?.invalid && versionForms.get('description')?.dirty || versionForms.get('description')?.touched">
+                        <p-message  *ngIf="versionForms.hasError('required','description')"
+                                    severity="error"
+                                    variant="simple"
+                                    size="small">Se ingresar la descripcion
+                        </p-message>
+                    </div>
+                </div>
+
+                <div class="col-12 field">
+                    <label for="file">Archivo</label>
+                    <p-fileupload (onSelect)="onSelectFile($event)"
+                                  (onClear)="onClearFile()"
+                                  [multiple]="false"
+                                  [showUploadButton] = "false"
+                                  [showCancelButton]="false"
+                                  [chooseButtonProps]="{size:'small'}"
+                                  accept=".zip,.rar"
+                                  maxFileSize="1000000"
+                                  mode="advanced">
+                        <ng-template #empty>
+                            <div>Seleccione el archivo comprimido.</div>
+                        </ng-template>
+
+                    </p-fileupload>
+                </div>
+
+            </form>
+
+            <ng-template #footer>
+                <p-button   (click)="showVersionModal = false; versionForms.reset()"
+                            [outlined]="true"
+                            icon="pi pi-times"
+                            label="Cancelar"
+                            severity="secondary"  />
+
+                <p-button   (click)="createVersion()"
+                            [outlined]="true"
+                            [disabled]="versionForms.invalid || httpLoading"
+                            icon="pi pi-save"
+                            label="Guardar"
+                            severity="primary"  />
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog   header="Agregar archivo"
+                    *ngIf="!loadingFiles"
+                    [modal]="true"
+                    (onHide)="fileForm.reset()"
+                    [(visible)]="showFileModal"
+                    [draggable]="false"
+                    [style]="{ width: '35rem' }">
+            <form [formGroup]="fileForm" class="grid form-grid">
+                <div class="col-12 pt-3 pb-3">
+                    <p-message *ngIf="fileForm.get('option')?.value === 'avatar'" severity="info">
+                        El avatar es una imagen cuadrada, en formato png, jpg, el peso maximo son 5KB, y una resolucion maxima de 300px.
+                    </p-message>
+                    <p-message *ngIf="fileForm.get('option')?.value === 'banner'" severity="info">
+                        El banner debe  imagen en aspecto 1:2, en formato png, jpg, el peso maximo son 5KB, y una resolucion maxima de 600px.
+                    </p-message>
+                    <p-message *ngIf="fileForm.get('option')?.value === 'media'" severity="info">
+                        El archivo debe ser una imagen/video con un maximo de 10MB.
+                    </p-message>
+                </div>
+                <div class="col-12 field">
+                    <label for="file">Archivo</label>
+                    <p-fileupload   #resourceFileUpload
+                                    (onSelect)="onSelectResourceFile($event)"
+                                  (onClear)="onClearResourceFile()"
+                                  [multiple]="false"
+                                  [showUploadButton] = "false"
+                                  [showCancelButton]="false"
+                                  [chooseButtonProps]="{size:'small',label:'Seleccione'}"
+                                  accept="image/*,video/*"
+                                  maxFileSize="1000000"
+                                  mode="advanced">
+                        <ng-template #empty>
+                            <div>Seleccione imagen/video.</div>
+                        </ng-template>
+
+                    </p-fileupload>
+                </div>
+
+            </form>
+
+            <ng-template #footer>
+                <p-button   (click)="showFileModal = false"
+                            [outlined]="true"
+                            icon="pi pi-times"
+                            label="Cancelar"
+                            severity="secondary"  />
+
+                <p-button   (click)="createResourceFile()"
+                            [outlined]="true"
+                            [disabled]="fileForm.invalid || httpLoading"
+                            icon="pi pi-save"
+                            label="Guardar"
+                            severity="success"  />
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

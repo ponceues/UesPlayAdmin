@@ -1,0 +1,16 @@
+<div class="w-full flex justify-between border-1 border-round mb-1">
+    <div class="flex align-items-center p-2 pl-3">
+        <span class="file-type justify-center align-items-center text-gray-700">
+            <lucide-icon *ngIf="file?.option === 'avatar'" name="square" [size]="24"/>
+            <lucide-icon *ngIf="file?.option === 'banner'" name="scan" [size]="24"/>
+            <lucide-icon *ngIf="file?.option === 'media'" name="image-play" [size]="24"/>
+        </span>
+
+        <span class="font-semibold">{{file!.name}}</span>
+    </div>
+    <div class="flex">
+        <span class="file-btn flex justify-center align-items-center text-gray-700">
+            <lucide-icon (click)="onRemoveFile()" name="trash-2"></lucide-icon>
+        </span>
+    </div>
+</div>

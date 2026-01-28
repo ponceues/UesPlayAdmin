@@ -1,0 +1,110 @@
+
+<form [formGroup]="licenseForm" class="grid formgrid">
+    <div class="field col-8 mb-4">
+        <label for="name">Licencia *</label>
+        <input type="text"
+               formControlName="name"
+               class="w-full"
+               placeholder="Licencia"
+               [readonly] ="dialogMode === 'delete'"
+               pInputText/>
+
+        <div *ngIf="licenseForm.get('name')?.invalid && licenseForm.get('name')?.dirty || licenseForm.get('name')?.touched">
+            <p-message  *ngIf="licenseForm.hasError('required','name')"
+                        severity="error"
+                        variant="simple"
+                        size="small">La licencia es requerido</p-message>
+            <p-message  *ngIf="licenseForm.hasError('minlength','name')"
+                        severity="error"
+                        variant="simple"
+                        size="small">El minimo son 6 caracteres</p-message>
+        </div>
+    </div>
+    <div class="field col-4 mb-4">
+        <label for="version">Version</label>
+        <input type="text"
+               pInputText
+               formControlName="version"
+               class="w-full"/>
+
+        <div *ngIf="licenseForm.get('version')?.invalid && licenseForm.get('version')?.dirty || licenseForm.get('version')?.touched">
+            <p-message  *ngIf="licenseForm.hasError('required','version')"
+                        severity="error"
+                        variant="simple"
+                        size="small">La version es requerida </p-message>
+        </div>
+    </div>
+    <div class="col-12 field">
+        <label for="description">Descripcion</label>
+        <textarea   formControlName="description"
+                    class="w-full"
+                    rows="3"
+                    pTextarea
+                    [readonly] ="dialogMode === 'delete'"
+                    [autoResize]="true">
+        </textarea>
+    </div>
+    <div class="col-12 field" >
+        <p-togglebutton [style]="{ width: '8em' }"
+                        formControlName="enabled"
+                        onIcon="pi pi-check"
+                        offIcon="pi pi-times"
+                        onLabel="Activo"
+                        offLabel="Inactivo">
+        </p-togglebutton>
+    </div>
+    <div class="col-12 field" *ngIf="dialogMode === 'delete'" >
+        <p-message severity="error">
+            <ng-template #icon>
+                <i class="pi pi-trash text-2xl"></i>
+            </ng-template>
+            <span class="ml-2"> La accion es irrebersible, ¿Estas seguro ? </span>
+        </p-message>
+    </div>
+
+
+    <div class="col-12">
+        <hr>
+    </div>
+    <div class="col-12">
+        <div class="flex justify-content-end">
+            <p-button   (onClick)="exitModal()"
+                        [tooltipOptions]="tooltipOption"
+                        icon="pi pi-times"
+                        pTooltip="Cancelar"
+                        severity="secondary"
+                        variant="outlined"
+                        label="Cancelar" />
+            &nbsp;&nbsp;
+            <p-button   *ngIf="dialogMode === 'create'"
+                        (onClick)="create()"
+                        [disabled]="licenseForm.invalid"
+                        [tooltipOptions]="tooltipOption || httpLoading"
+                        [tooltipDisabled]="licenseForm.invalid || httpLoading"
+                        icon="pi pi-save"
+                        pTooltip="Guardar"
+                        severity="success"
+                        variant="outlined"
+                        label="Guardar" />
+            <p-button   *ngIf="dialogMode === 'update'"
+                        (onClick)="update()"
+                        [disabled]="licenseForm.invalid"
+                        [tooltipOptions]="tooltipOption || httpLoading"
+                        [tooltipDisabled]="licenseForm.invalid || httpLoading"
+                        icon="pi pi-save"
+                        pTooltip="Guardar"
+                        severity="success"
+                        variant="outlined"
+                        label="Actualizar" />
+            <p-button   *ngIf="dialogMode === 'delete'"
+                        (onClick)="delete()"
+                        [tooltipOptions]="tooltipOption || httpLoading"
+                        [tooltipDisabled]="licenseForm.invalid || httpLoading"
+                        icon="pi pi-trash"
+                        pTooltip="Eliminar"
+                        severity="danger"
+                        variant="outlined"
+                        label="Eliminar" />
+        </div>
+    </div>
+</form>

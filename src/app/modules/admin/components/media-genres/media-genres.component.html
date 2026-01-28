@@ -1,0 +1,140 @@
+
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header ">
+                <h4 class="font-semibold text-xl mb-6">Generos en la categoria  <span *ngIf="selectedMediaType!= null">{{selectedMediaType.name.toLowerCase()}}</span></h4>
+            </div>
+            <div *ngIf="!loadingPage" class="card-body">
+                <p-table    #mainTable
+                            (onLazyLoad)="fetchMediaGenres($event)"
+                            [value]="mediaGenres"
+                            [paginator]="true"
+                            [totalRecords]="meta.count"
+                            [rows]="meta.pageSize"
+                            [lazy]="true"
+                            [lazyLoadOnInit]="false"
+                            [showCurrentPageReport]="true"
+                            [loading]="loadingEntities"
+                            rowHover="true"
+                            currentPageReportTemplate=" Mostrando {first} - {last} de {totalRecords} elementos">
+                    <ng-template #caption>
+                        <div class="grid flex justify-between items-center">
+                            <form [formGroup]="entitiesFilterForm" class="formgroup-inline">
+                                <div class="field">
+                                    <p-iconfield iconPosition="left" class="ml-auto">
+                                        <p-inputicon>
+                                            <i class="pi pi-search"></i>
+                                        </p-inputicon>
+                                        <input  formControlName="text"
+                                                pInputText
+                                                type="text"
+                                                placeholder="Buscar"
+                                        />
+                                    </p-iconfield>
+                                </div>
+                                <div class="field">
+                                    <p-select [options]="activeOptions"
+                                              formControlName="state"
+                                              optionLabel="name"
+                                              optionValue="value"
+                                              placeholder="Seleccione" />
+                                </div>
+                                <p-button   [icon]="'pi pi-filter'"
+                                            (onClick)="filterEntities()"
+                                            [tooltipOptions]="tooltipOption"
+                                            [pTooltip]="'Aplicar'"
+
+                                            severity="info"
+                                            variant="outlined" />
+                                &nbsp;
+                                <p-button   [icon]="'pi pi-filter-slash'"
+                                            (onClick)=" clearFilters()"
+                                            [tooltipOptions]="tooltipOption"
+                                            [pTooltip]=" 'Remover filtros'"
+                                            [tooltipDisabled]="!filteredEntities"
+                                            [disabled]="!filteredEntities"
+                                            severity="secondary"
+                                            variant="outlined" />
+                            </form>
+
+                            <div>
+                                <p-button   *ngIf="permissions.includes('can.create.area')"
+                                            (onClick)="showCreateEntity()"
+                                            icon="pi pi-plus"
+                                            pTooltip="Registrar usuario"
+                                            [tooltipOptions]="tooltipOption"
+                                            variant="outlined"
+                                            severity="secondary"
+                                            label="Agregar" />
+                            </div>
+                        </div>
+
+
+                    </ng-template>
+
+                    <ng-template #header>
+                        <tr>
+                            <th>Nombre</th>
+                            <th> Descripcion</th>
+                            <th>Estado</th>
+                            <th>Creado</th>
+                            <th>Actualizado</th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template #body let-entity>
+                        <tr>
+                            <td style="max-width: 10rem;" >{{ entity.name }}</td>
+                            <td style="max-width: 20rem;"
+                                class="white-space-nowrap overflow-hidden text-overflow-ellipsis" >
+                                <p> {{entity.description}} </p>
+                            </td>
+
+                            <td>
+                                <p-tag *ngIf="entity.enabled" severity="success" icon="pi pi-check" value="Activo" />
+                                <p-tag *ngIf="!entity.enabled" severity="danger" icon="pi pi-times" value="Inactivo" />
+                            </td>
+                            <td>
+                                {{ entity.createdAt | date:'dd/MM/yyyy':'UTC-6' }}
+                            </td>
+                            <td>
+                                {{ entity.updatedAt | date:'dd/MM/yyyy':'UTC-6' }}
+                            </td>
+                            <td class="text-center">
+                                <p-button   *ngIf="permissions.includes('can.update.area')"
+                                            [disabled]="entity.isDefault"
+                                            (onClick)="showUpdateEntity(entity)"
+                                            [rounded]="true"
+                                            [outlined]="true"
+                                            [tooltipOptions]="tooltipOption"
+                                            icon="pi pi-pencil"
+                                            severity="secondary"
+                                            pTooltip="Actualizar tipo"/>
+                                &nbsp;
+                                <p-button   *ngIf="permissions.includes('can.delete.area')"
+                                            (onClick)="showDelete(entity)"
+                                            [rounded]="true"
+                                            [outlined]="true"
+                                            [tooltipOptions]="tooltipOption"
+                                            icon="pi pi-trash"
+                                            severity="danger"
+                                            pTooltip="Eliminar curso"/>
+                            </td>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template #emptymessage>
+                        <tr>
+                            <td colspan="6" style="text-align: center">No se han encontrado registros.</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+            <div *ngIf="loadingPage" class="card-body">
+                <app-datatable-skeleton></app-datatable-skeleton>
+            </div>
+        </div>
+    </div>
+</div>

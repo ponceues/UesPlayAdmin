@@ -1,0 +1,27 @@
+.up-chip{
+    border :  1px rgb(218,220,224) solid;
+    cursor: pointer;
+    padding-left : 1.5rem;
+    padding-right: 1.5rem;
+    font-weight: 600;
+    color:rgb(95,99,104);
+    background-color:#fdfffc;
+    &:hover{
+        background-color: rgba(139,14,19,0.1);
+    }
+
+    &.active{
+        color:#8B0E13;
+        border :  1px rgba(95,99,104,0.1) solid;
+        background-color: rgba(95,99,104,0.1);
+        .p-chip-icon{
+            color:#8B0E13 !important;
+        }
+    }
+}
+
+.up-card{
+    &:hover{
+        background-color: rgba(95,99,104,0.1);
+    }
+}

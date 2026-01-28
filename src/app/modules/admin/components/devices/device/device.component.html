@@ -1,0 +1,116 @@
+
+<form [formGroup]="entityForm" class="grid formgrid">
+    <div class="field col-12 mb-12">
+        <label for="name">Nombre del dispositivo</label>
+        <input type="text"
+               formControlName="name"
+               class="w-full"
+               placeholder="Nombre del dispositivo"
+               [readonly] ="dialogMode === 'delete'"
+               pInputText/>
+
+        <div *ngIf="entityForm.get('name')?.invalid && entityForm.get('name')?.dirty || entityForm.get('name')?.touched">
+            <p-message  *ngIf="entityForm.hasError('required','name')"
+                        severity="error"
+                        variant="simple"
+                        size="small">El nombre del curso es requerido</p-message>
+            <p-message  *ngIf="entityForm.hasError('minlength','name')"
+                        severity="error"
+                        variant="simple"
+                        size="small">El minimo son 6 caracteres</p-message>
+        </div>
+    </div>
+    <div class="col-12 field">
+        <label for="description">Descripcion</label>
+        <textarea   formControlName="description"
+                    class="w-full"
+                    rows="3"
+                    pTextarea
+                    [readonly] ="dialogMode === 'delete'"
+                    [autoResize]="true">
+        </textarea>
+    </div>
+
+    <div class="col-6 field" >
+        <i  *ngIf="entityForm.get('icon')?.value !== null"
+            class="{{ entityForm.get('icon')?.value }} border-1 bg-gray-50 text-2xl p-3 border-round "></i>
+        <div    *ngIf="entityForm.get('icon')?.value === null"
+                class="border-1 border-round bg-gray-50 h-3rem w-3rem border-red-300"></div>
+    </div>
+
+    <div class="col-6 field" >
+        <div class="flex justify-content-end">
+            <p-togglebutton [style]="{ width: '8em' }"
+                            formControlName="active"
+                            onIcon="pi pi-check"
+                            offIcon="pi pi-times"
+                            onLabel="Activo"
+                            offLabel="Inactivo">
+            </p-togglebutton>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card bg-gray-50 border-1 h-7rem p-1 overflow-auto" >
+            <i  *ngFor="let icon of iconList"
+                (click)="setIcon(icon.value)"
+                class="{{icon.value}} p-3 text-2xl hover:bg-gray-200 hover:border-1 border-round-lg cursor-pointer"></i>
+        </div>
+    </div>
+
+    <div class="col-12 field mt-4" *ngIf="dialogMode === 'delete'" >
+        <p-message severity="error">
+            <ng-template #icon>
+                <i class="pi pi-trash"></i>
+            </ng-template>
+            <span class="ml-2"> La accion es irrebersible, ¿Estas seguro ? </span>
+        </p-message>
+    </div>
+
+
+    <div class="col-12">
+        <hr>
+    </div>
+    <div class="col-12">
+        <div class="flex justify-content-end">
+            <p-button   (onClick)="exitModal()"
+                        [tooltipOptions]="tooltipOption"
+                        icon="pi pi-times"
+                        pTooltip="Cancelar"
+                        severity="secondary"
+                        variant="outlined"
+                        label="Cancelar" />
+            &nbsp;&nbsp;
+            <p-button   *ngIf="dialogMode === 'create'"
+                        (onClick)="create()"
+                        [disabled]="entityForm.invalid"
+                        [tooltipOptions]="tooltipOption || httpLoading"
+                        [tooltipDisabled]="entityForm.invalid || httpLoading"
+                        icon="pi pi-save"
+                        pTooltip="Guardar"
+                        severity="success"
+                        variant="outlined"
+                        label="Guardar" />
+            <p-button   *ngIf="dialogMode === 'update'"
+                        (onClick)="update()"
+                        [disabled]="entityForm.invalid"
+                        [tooltipOptions]="tooltipOption || httpLoading"
+                        [tooltipDisabled]="entityForm.invalid || httpLoading"
+                        icon="pi pi-save"
+                        pTooltip="Guardar"
+                        severity="success"
+                        variant="outlined"
+                        label="Actualizar" />
+            <p-button   *ngIf="dialogMode === 'delete'"
+                        (onClick)="delete()"
+                        [tooltipOptions]="tooltipOption || httpLoading"
+                        [tooltipDisabled]="entityForm.invalid || httpLoading"
+                        icon="pi pi-trash"
+                        pTooltip="Eliminar"
+                        severity="danger"
+                        variant="outlined"
+                        label="Eliminar" />
+        </div>
+    </div>
+</form>
+

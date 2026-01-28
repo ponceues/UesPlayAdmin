@@ -1,0 +1,103 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header pb-3" *ngIf="loadingMenus">
+                <p-skeleton width="15rem" height="3rem"></p-skeleton>
+            </div>
+            <div class="card-header" *ngIf="!loadingMenus">
+                <h4 class="font-semibold text-xl mb-6">
+                    <i class="pi pi-list"></i> &nbsp; Menus asignados al rol {{selectedRol.name.toLowerCase()}}
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="card-section mb-3 mt-3" *ngIf="!loadingMenus">
+                    <p-message severity="warn" [closable]="true">
+                        <ng-template #icon>
+                            <i class="pi pi-info-circle text-3xl"></i>
+                        </ng-template>
+                        <span class="ml-2">Puesdes arrastrar los menus de la parte izquierda para asignarlos al rol {{selectedRol.name}}.</span>
+                    </p-message>
+                </div>
+                <div class="card-section mb-3" *ngIf="!loadingMenus">
+                    <p-picklist (onMoveToTarget)="addMenu($event)"
+                                (onMoveToSource)="removeMenu($event)"
+                                [source]="sourceMenus"
+                                [target]="selectedRol.menus"
+                                [responsive]="true"
+                                [showTargetControls]="false"
+                                [showSourceControls]="false"
+                                [metaKeySelection]="true"
+                                [stripedRows]="true"
+                                filterBy="name"
+                                sourceFilterPlaceholder="Buscar menu"
+                                targetFilterPlaceholder="Buscar menu">
+                        <ng-template let-option let-selected="selected" #item>
+                            <div class="col">
+                                <div class="flex justify-between">
+                                    <div>
+                                        <i class="pi {{option.icon}}" style="font-size: 16px"></i>
+                                        &nbsp;
+                                        <span>{{ option.name }}</span>
+                                    </div>
+                                    <div *ngIf="option.parentId === null">
+                                        <i class="pi pi-clone"  style="font-size: 16px"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </ng-template>
+                    </p-picklist>
+
+                </div>
+                <div class="card-section"*ngIf="loadingMenus">
+                    <app-picklist-skeleton ></app-picklist-skeleton>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header pb-3" *ngIf="loadingPermissions">
+                <p-skeleton width="15rem" height="3rem"></p-skeleton>
+            </div>
+            <div class="card-header pb-3" *ngIf="!loadingPermissions">
+                <h4 class="font-semibold text-xl">
+                    <i class="pi pi-verified"></i> &nbsp; Permisos asignados al rol {{selectedRol.name.toLowerCase()}}
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="card-section mb-3" *ngIf="!loadingPermissions">
+                    <p-picklist (onMoveToTarget)="addPermission($event)"
+                                (onMoveToSource)="removePermission($event)"
+                                [source]="sourcePermissions"
+                                [target]="selectedRol.permissions"
+                                [responsive]="true"
+                                [showTargetControls]="false"
+                                [showSourceControls]="false"
+                                [metaKeySelection]="true"
+                                [stripedRows]="true"
+                                filterBy="name"
+                                sourceFilterPlaceholder="Buscar permiso"
+                                targetFilterPlaceholder="Buscar permiso">
+                        <ng-template let-option let-selected="selected" #item>
+                            <div class="col">
+                                <div class="flex justify-between">
+                                    <div>
+                                            <span>{{ option.name }}</span> <br>
+                                            <small *ngIf="option.menu !== null">
+                                                <b>
+                                                    {{option.menu.name}}
+                                                </b>
+                                            </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-picklist>
+                </div>
+                <div class="card-section mb-3"*ngIf="loadingPermissions">
+                    <app-picklist-skeleton ></app-picklist-skeleton>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

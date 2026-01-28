@@ -2,4 +2,180 @@
 @use './tailwind.css';
 @use './assets/layout/layout.scss';
 @use 'primeicons/primeicons.css';
-@use './assets/demo/demo.scss';
+
+
+:root {
+    --p-togglebutton-content-padding: 0.25rem 0.75rem;
+    --p-togglebutton-padding: 0.25rem !important;
+    --p-togglebutton-content-border-radius: var(--p-content-border-radius);
+    --rq-border-radius-primary : 25px;
+
+    --up-text-secondary-color: #02182B;
+    --up-acent-color: #FDFFFC;
+}
+
+
+.p-breadcrumb{
+    background: transparent!important;
+}
+
+body {
+    font-family: Roboto, sans-serif; /* Replace with your desired font */
+}
+.p-picklist-controls{
+    //display: none !important;
+    > *:nth-child(even) {
+        display: none;
+    }
+}
+
+:root{
+    --up-secondary-50 : #E6EEF3;
+    --up-secondary-100: #C2D9E6;
+    --up-secondary-200: #9CC4D8;
+    --up-secondary-300: #76AECB;
+    --up-secondary-400: #5199BE;
+    --up-secondary-500: #2B84B1;
+    --up-secondary-600: #1F688F;
+    --up-secondary-700: #164E6D;
+    --up-secondary-800: #0D344B;
+    --up-secondary-900: #051D2A;
+    --up-secondary-950: #03131B;
+
+    --up-primary-50: #F4D6D7;
+    --up-primary-100: #E8AEB0;
+    --up-primary-200: #DC8689;
+    --up-primary-300: #CF5E61;
+    --up-primary-400: #C3373A;
+    --up-primary-500: #8B0E13;
+    --up-primary-600: #710B0F;
+    --up-primary-700: #57090B;
+    --up-primary-800: #3D0608;
+    --up-primary-900: #240405;
+    --up-primary-950: #130202;
+}
+.up-chip{
+    &.active{
+        .p-chip-icon{
+            color:#8B0E13 !important;
+        }
+    }
+}
+
+.up-primary-btn {
+    background: #FDFFFC !important;
+    border-color: #FFFFFF !important;
+    color: var(--up-secondary-700) !important;
+    &:hover{
+        color: var(--up-primary-500) !important;
+    }
+}
+
+.up-secondary-bg {
+    background-color: var(--up-secondary-900) !important;
+    min-height: 400px !important;
+    max-height: 500px;
+    height: 35vw !important;
+}
+
+.image-container-wrapper {
+    width: 80vw;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    justify-content: end;
+}
+
+.image-container {
+    background-size: cover;
+    background-repeat: no-repeat;
+    aspect-ratio: 1 / 2;
+    position: relative;
+    width: 60%;
+    min-height: 400px;
+    max-height: 500px;
+    height: 35vw;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-left: 5vw;
+    padding-right: 5vw;
+}
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        linear-gradient(to bottom, var(--up-secondary-900) 0%, rgba(22,78,109,0) 50%, var(--up-secondary-900) 95%),
+        linear-gradient(to left, var(--up-secondary-900) 0%, rgba(22,78,109,0) 50%, var(--up-secondary-900) 95%);
+    z-index: 1;
+}
+.banner-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+    color: #fff;
+    padding: 3rem 2rem 2rem 3rem;
+}
+.public-main-container {
+    position: relative;
+}
+.banner-complement{
+    background: var(--up-secondary-900);
+    height: 5rem;
+}
+
+
+.up-chip-primary{
+    color: var(--up-primary-500) !important;
+    font-weight: bold;
+
+    .pi{
+        color: var(--up-primary-500) !important;
+    }
+}
+.carousel-card{
+    &:hover{
+        background-color: var(--up-secondary-50) !important;
+
+        .labels{
+            color: var(--up-primary-700) !important;
+            font-weight: bold;
+        }
+    }
+}
+.p-datatable-thead > tr > th{
+    background-color: var(--up-secondary-50) !important;
+    color: var(--up-secondary-950) !important;
+}
+
+.up-select-primary{
+    border-radius: 25px !important;
+    padding-left: .5rem !important;
+    font-weight: 700 !important;
+    &:hover{
+        background-color: var(--p-gray-50);
+        border-color: var(--up-primary-700) !important;
+        color: var(--up-primary-700) !important;
+    }
+    &:focus{
+        background-color: var(--p-gray-50);
+        border-color: var(--up-primary-700) !important;
+        color: var(--up-primary-700) !important;
+    }
+    &:active{
+        background-color: var(--p-gray-50);
+        border-color: var(--up-primary-700) !important;
+        color: var(--up-primary-700) !important;
+    }
+
+}
+.p-select:not(.p-disabled).p-focus{
+    background-color: var(--p-gray-50);
+    border-color: var(--up-primary-500) !important;
+}
+

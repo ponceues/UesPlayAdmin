@@ -1,0 +1,135 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="font-semibold text-xl mb-6">Usuarios</h4>
+            </div>
+            <div *ngIf="!loadingPage" class="card-body">
+                <p-table    #mainTable
+                            (onLazyLoad)="fetchUsers($event)"
+                            [value]="entities"
+                            [paginator]="true"
+                            [totalRecords]="meta.count"
+                            [rows]="meta.pageSize"
+                            [lazy]="true"
+                            [lazyLoadOnInit]="false"
+                            [showCurrentPageReport]="true"
+                            [loading]="loadingEntities"
+                            rowHover="true"
+                            currentPageReportTemplate=" Mostrando {first} - {last} de {totalRecords} elementos">
+                    <ng-template #caption>
+                        <div class="flex justify-between items-center">
+                            <form [formGroup]="entitiesFilterForm" class="formgroup-inline">
+                                <div class="field">
+                                    <p-iconfield iconPosition="left" class="ml-auto">
+                                        <p-inputicon>
+                                            <i class="pi pi-search"></i>
+                                        </p-inputicon>
+                                        <input  formControlName="text"
+                                                pInputText
+                                                type="text"
+                                                placeholder="Buscar"
+                                        />
+                                    </p-iconfield>
+                                </div>
+                                <div class="field">
+                                    <p-select [options]="userStates"
+                                              formControlName="state"
+                                              class="w-15rem"
+                                              optionLabel="name"
+                                              optionValue="stateId"
+                                              placeholder="Seleccione estado" />
+                                </div>
+                                <p-button   [icon]="'pi pi-filter'"
+                                            (onClick)="filterEntities()"
+                                            [tooltipOptions]="tooltipOption"
+                                            [pTooltip]="'Aplicar'"
+                                            severity="info"
+                                            variant="outlined" />
+                                &nbsp;
+                                <p-button   [icon]="'pi pi-filter-slash'"
+                                            (onClick)=" clearFilters()"
+                                            [tooltipOptions]="tooltipOption"
+                                            [pTooltip]=" 'Remover filtros'"
+                                            [tooltipDisabled]="!filteredEntities"
+                                            [disabled]="!filteredEntities"
+                                            severity="secondary"
+                                            variant="outlined" />
+                            </form>
+
+                            <div>
+                                <p-button   (onClick)="showBulkUpload()"
+                                            [tooltipOptions]="tooltipOption"
+                                            icon="pi pi-upload"
+                                            pTooltip="Cargar masivamente"
+                                            variant="outlined"
+                                            severity="success"
+                                            label="Carga masiva" />
+                                &nbsp;
+                                <p-button   (onClick)="showCreateEntity()"
+                                            [tooltipOptions]="tooltipOption"
+                                            icon="pi pi-user-plus"
+                                            pTooltip="Registrar usuario"
+                                            variant="outlined"
+                                            severity="secondary"
+                                            label="Agregar" />
+                            </div>
+                        </div>
+
+
+                    </ng-template>
+
+                    <ng-template #header>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Email</th>
+                            <th>Estado</th>
+                            <th>Fecha de registro </th>
+                            <th>Acciones</th>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template #body let-entity>
+                        <tr>
+                            <td>{{ entity.name }}</td>
+                            <td>
+                                <b>{{ entity.email }}</b>
+                            </td>
+                            <td>
+
+                                <p-tag *ngIf="entity.state!.code === userStatesEnum.Created" severity="secondary" icon="pi pi-sparkles" value="Creado" />
+                                <p-tag *ngIf="entity.state!.code === userStatesEnum.Pending" severity="warn" icon="pi pi-circle-fill" value="Pendiente" />
+                                <p-tag *ngIf="entity.state!.code === userStatesEnum.Active" severity="success" icon="pi pi-check" value="Activo" />
+                                <p-tag *ngIf="entity.state!.code === userStatesEnum.Locked" severity="warning" icon="pi pi-lock" value="Bloqueado" />
+                                <p-tag *ngIf="entity.state!.code === userStatesEnum.Rejected" severity="danger" icon="pi pi-times" value="Rechazado" />
+                            </td>
+                            <td>
+                                {{ entity.updatedAt | date:'dd/MM/yyyy':'UTC-6' }}
+                            </td>
+                            <td>
+                                <p-button [disabled]="entity.isDefault || entity.state?.code === userStatesEnum.Created"
+                                          (onClick)="showUpdateEntity(entity)"
+                                          [rounded]="true"
+                                          [outlined]="true"
+                                          [tooltipOptions]="tooltipOption"
+                                          [tooltipDisabled]="entity.isDefault"
+                                          icon="pi pi-pencil"
+                                          severity="secondary"
+                                          pTooltip="Actualizar usuario"/>
+                            </td>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template #emptymessage>
+                        <tr>
+                            <td colspan="6" style="text-align: center">No se han encontrado registros.</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+            <div *ngIf="loadingPage" class="card-body">
+                <app-datatable-skeleton></app-datatable-skeleton>
+            </div>
+        </div>
+    </div>
+</div>

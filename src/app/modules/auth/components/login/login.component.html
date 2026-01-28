@@ -1,0 +1,73 @@
+<div    style="max-width: 100%; overflow-x: auto;"
+        class="grid bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen overflow-hidden">
+    <div class="sm:col-11 md:col-8 lg:col-6 xl:col-4">
+        <app-configurator />
+        <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20 shadow-1" style="border-radius: 12px">
+            <div class="grid">
+                <div class="col-12 flex justify-content-center">
+                    <img src="svg/minerva.svg" height="350">
+                </div>
+                <div class="col-12 flex justify-content-center">
+                    <h2>Ingresar al sistema</h2>
+                </div>
+            </div>
+            <form [formGroup]="loginForm" class="grid formgrid" >
+                <div class="col-12 field mb-4">
+                    <label for="email" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
+                    <input pInputText
+                           id="email"
+                           type="text"
+                           placeholder="example@ues.edu.sv"
+                           class="w-full mb-1"
+                           formControlName="email" />
+                    <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('name')?.dirty || loginForm.get('email')?.touched">
+                        <p-message  *ngIf="loginForm.hasError('required','email')"
+                                    severity="error"
+                                    variant="simple"
+                                    size="small">El nombre de usuario es requerido</p-message>
+                        <p-message  *ngIf="loginForm.hasError('email','email')"
+                                    severity="error"
+                                    variant="simple"
+                                    size="small">El email es invalido</p-message>
+                    </div>
+                </div>
+                <div class="col-12 field mb-4">
+                    <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
+                    <p-password [toggleMask]="true"
+                                [fluid]="true"
+                                [feedback]="false"
+                                id="password"
+                                formControlName="password"
+                                placeholder="contraseña">
+                    </p-password>
+                    <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.dirty || loginForm.get('password')?.touched">
+                        <p-message  *ngIf="loginForm.hasError('required','password')"
+                                    severity="error"
+                                    variant="simple"
+                                    size="small">Este campo es requerido</p-message>
+                        <p-message  *ngIf="loginForm.hasError('minlength','password')"
+                                    severity="error"
+                                    variant="simple"
+                                    size="small">El formato es invalido</p-message>
+                    </div>
+                </div>
+                <div class="col-12 flex justify-content-between">
+                    <span   (click)="goToStart()"
+                            class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Regresar
+                    </span>
+                    <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">¿Has olvidado tu contraseña?</span>
+                </div>
+            </form>
+            <div class="grid">
+                <div class="col-12 mt-4">
+                    <p-button   (onClick)="loginFn()"
+                                [disabled]="httpLoading || loginForm.invalid"
+                                label="Ingresar"
+                                styleClass="w-full"></p-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,146 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="font-semibold text-xl mb-6">Roles</h4>
+            </div>
+            <div class="card-body">
+                <p-table    #mainTable
+                            (onLazyLoad)="fetchRoles($event)"
+                            [value]="roles"
+                            [paginator]="true"
+                            [totalRecords]="meta.count"
+                            [rows]="meta.pageSize"
+                            [lazy]="true"
+                            [lazyLoadOnInit]="false"
+                            [showCurrentPageReport]="true"
+                            [loading]="loadingTable"
+                            rowHover="true"
+                            currentPageReportTemplate=" Mostrando {first} - {last} de {totalRecords} elementos">
+                    <ng-template #caption>
+                        <div class="grid flex justify-between items-center">
+                            <form [formGroup]="filterForm" class="formgroup-inline">
+                                <div class="field">
+                                    <p-iconfield iconPosition="left" class="ml-auto">
+                                        <p-inputicon>
+                                            <i class="pi pi-search"></i>
+                                        </p-inputicon>
+                                        <input  formControlName="text"
+                                                pInputText
+                                                type="text"
+                                                placeholder="Buscar"
+                                        />
+                                    </p-iconfield>
+                                </div>
+                                <div class="field">
+                                    <p-select [options]="rolStatus"
+                                              formControlName="available"
+                                              optionLabel="label"
+                                              optionValue="value"
+                                              placeholder="Seleccione" />
+                                </div>
+                                <p-button   [icon]="'pi pi-filter'"
+                                            (onClick)="filterTable()"
+                                            [tooltipOptions]="tooltipOption"
+                                            [pTooltip]="'Aplicar filtros'"
+                                            [disabled]="!availableFiltered"
+                                            [tooltipDisabled]="!availableFiltered"
+                                            severity="info"
+                                            variant="outlined" />
+                                &nbsp;
+                                <p-button   [icon]="'pi pi-filter-slash'"
+                                            (onClick)=" clearFilters()"
+                                            [tooltipOptions]="tooltipOption"
+                                            [pTooltip]=" 'Remover filtros'"
+                                            [tooltipDisabled]="!filteredTable"
+                                            [disabled]="!filteredTable"
+                                            severity="secondary"
+                                            variant="outlined" />
+                            </form>
+
+                            <div>
+                                <p-button   (onClick)="showCreateRolModal()"
+                                            [tooltipOptions]="tooltipOption"
+                                            icon="pi pi-plus"
+                                            pTooltip="Registrar rol"
+                                            variant="outlined"
+                                            severity="secondary"
+                                            label="Agregar" />
+                            </div>
+                        </div>
+
+
+                    </ng-template>
+
+                    <ng-template #header>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Tipo</th>
+                            <th>Fecha de registro </th>
+                            <th>Acciones</th>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template #body let-entity>
+                        <tr>
+                            <td>{{ entity.name }}</td>
+                            <td>{{ entity.description }}</td>
+                            <td>
+                                <p-tag *ngIf="!entity.isActive" severity="danger" icon="pi pi-times" value="Inactivo" />
+                                <p-tag *ngIf="entity.isActive" severity="success" icon="pi pi-check" value="Activo" />
+                            </td>
+                            <td>
+                                <p-chip *ngIf="entity.isDefault" label="Sistema" icon="pi pi-lock" />
+                                <p-chip *ngIf="!entity.isDefault" label="Registro" icon="pi pi-unlock" />
+                            </td>
+                            <td>
+                                {{ entity.updatedAt | date:'dd/MM/yyyy':'UTC-6' }}
+                            </td>
+                            <td>
+                                <p-button [disabled]="entity.isDefault"
+                                          (onClick)="showUpdateModal(entity)"
+                                          [rounded]="true"
+                                          [outlined]="true"
+                                          [tooltipOptions]="tooltipOption"
+                                          [tooltipDisabled]="entity.isDefault"
+                                          icon="pi pi-pencil"
+                                          severity="secondary"
+                                          pTooltip="Editar rol"/>
+                                &nbsp;
+                                <p-button   [routerLink]="[entity.rolId,'settings']"
+                                            [disabled]="entity.isDefault"
+                                            [rounded]="true"
+                                            [outlined]="true"
+                                            [tooltipOptions]="tooltipOption"
+                                            [tooltipDisabled]="entity.isDefault"
+                                            icon="pi pi-wrench"
+                                            pTooltip="Ajustes del rol"
+                                            severity="secondary">
+                                </p-button>
+                                &nbsp;
+                                <p-button   (onClick)="showDeleteModal(entity)"
+                                            [disabled]="entity.isDefault"
+                                            [rounded]="true"
+                                            [outlined]="true"
+                                            [tooltipOptions]="tooltipOption"
+                                            [tooltipDisabled]="entity.isDefault"
+                                            icon="pi pi-trash"
+                                            pTooltip="Eliminar"
+
+                                            severity="danger"/>
+                            </td>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template #emptymessage>
+                        <tr>
+                            <td colspan="6" style="text-align: center">No se han encontrado registros.</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>

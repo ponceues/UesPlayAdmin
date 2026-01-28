@@ -1,0 +1,92 @@
+<form [formGroup]="bulkForm" class="grid formgrid">
+    <div class="col-12 field mb-4">
+        <div class="card flex bg-gray-100 justify-between">
+            <p>Descarga la plantilla para cargar masivamente usuarios </p>
+            <p-button   (onClick)="dowloadTemaplate()"
+                        [tooltipOptions]="tooltipOption"
+                        icon="pi pi-download"
+                        pTooltip="Descargar plantilla"
+                        severity="danger"
+                        variant="outlined"
+            />
+        </div>
+    </div>
+    <div class="field col-6 mb-4">
+        <label for="area">Area</label>
+        <p-select [options]="areas"
+                  optionLabel="name"
+                  optionValue="areaId"
+                  placeholder="Seleccione"
+                  formControlName="areaId"
+                  appendTo="body"
+                  class="w-full md:w-56" />
+        <div *ngIf="bulkForm.get('areaId')?.invalid && bulkForm.get('areaId')?.dirty || bulkForm.get('areaId')?.touched">
+            <p-message  *ngIf="bulkForm.hasError('required','areaId')"
+                        severity="error"
+                        variant="simple"
+                        size="small">
+                Seleccione area
+            </p-message>
+        </div>
+    </div>
+
+    <div class="field col-6 mb-4">
+        <label for="area">Rol</label>
+        <p-select [options]="roles"
+                  optionLabel="name"
+                  optionValue="rolId"
+                  placeholder="Seleccione rol"
+                  formControlName="rolId"
+                  appendTo="body"
+                  class="w-full md:w-56" />
+        <div *ngIf="bulkForm.get('rolId')?.invalid && bulkForm.get('rolId')?.dirty || bulkForm.get('rolId')?.touched">
+            <p-message  *ngIf="bulkForm.hasError('required','rolId')"
+                        severity="error"
+                        variant="simple"
+                        size="small">
+                El area es requerido
+            </p-message>
+        </div>
+    </div>
+    <div class="col-12 field mb-4">
+            <p-fileupload name="file"
+                          (onClear)="onClearFile()"
+                          (onRemove)="onClearFile()"
+                          (onSelect)="onSelectFile($event)"
+                          [multiple]="false"
+                          [showUploadButton]="false"
+                          cancelLabel="Cancelar"
+                          chooseLabel="Selecionar"
+                          accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                          maxFileSize="1000000"
+                          class="w-full"
+                          mode="advanced">
+            </p-fileupload>
+    </div>
+    <div class="col-12">
+        <hr>
+    </div>
+    <div class="col-12">
+        <div class="flex justify-content-end">
+            <p-button   (onClick)="exitModal()"
+                        [tooltipOptions]="tooltipOption"
+                        icon="pi pi-times"
+                        pTooltip="Cancelar"
+                        severity="secondary"
+                        variant="outlined"
+                        label="Cancelar" />
+            &nbsp;&nbsp;
+            <p-button
+                        (onClick)="bulkCreate()"
+                        [disabled]="bulkForm.invalid || httpLoading"
+                        [tooltipOptions]="tooltipOption || httpLoading"
+                        [tooltipDisabled]="false"
+                        icon="pi pi-save"
+                        pTooltip="Guardar"
+                        severity="primary"
+                        variant="outlined"
+                        label="Enviar" />
+        </div>
+    </div>
+</form>
+

@@ -1,23 +1,36 @@
 import { Routes } from '@angular/router';
 import { AppLayout } from './app/layout/component/app.layout';
-import { Dashboard } from './app/pages/dashboard/dashboard';
-import { Documentation } from './app/pages/documentation/documentation';
-import { Landing } from './app/pages/landing/landing';
-import { Notfound } from './app/pages/notfound/notfound';
+import { PublicLayoutComponent } from '@shared/components/public-layout/public-layout.component';
+import { PreviewComponent } from '@admin/components/resources/preview/preview.component';
 
 export const appRoutes: Routes = [
     {
-        path: '',
-        component: AppLayout,
+        path:'',
+        redirectTo:'recursos',
+        pathMatch:'full',
+    },
+    {
+        path: 'admin/recursos/preview',
+        component: PublicLayoutComponent,
         children: [
-            { path: '', component: Dashboard },
-            { path: 'uikit', loadChildren: () => import('./app/pages/uikit/uikit.routes') },
-            { path: 'documentation', component: Documentation },
-            { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
+            {
+                path: '',
+                component: PreviewComponent
+            }
         ]
     },
-    { path: 'landing', component: Landing },
-    { path: 'notfound', component: Notfound },
-    { path: 'auth', loadChildren: () => import('./app/pages/auth/auth.routes') },
-    { path: '**', redirectTo: '/notfound' }
+    {
+        path: 'admin',
+        component: AppLayout,
+        loadChildren:()=>import('./app/modules/admin/admin.module').then(m=>m.AdminModule),
+    },
+    {
+        path: 'recursos',
+        component: PublicLayoutComponent,
+        loadChildren: () => import('./app/modules/public/public.module').then(m => m.PublicModule),
+    },
+    {
+        path: 'auth',
+        loadChildren: () => import('./app/modules/auth/auth.module').then(m => m.AuthModule)
+    }
 ];

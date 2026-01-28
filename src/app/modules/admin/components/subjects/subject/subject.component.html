@@ -1,0 +1,112 @@
+
+<form [formGroup]="areaForm" class="grid formgrid">
+    <div class="field col-8 mb-4">
+        <label for="name">Curso</label>
+        <input type="text"
+               formControlName="name"
+               class="w-full"
+               placeholder="Nombre del curso"
+               [readonly] ="dialogMode === 'delete'"
+               pInputText/>
+
+        <div *ngIf="areaForm.get('name')?.invalid && areaForm.get('name')?.dirty || areaForm.get('name')?.touched">
+            <p-message  *ngIf="areaForm.hasError('required','name')"
+                        severity="error"
+                        variant="simple"
+                        size="small">El nombre del curso es requerido</p-message>
+            <p-message  *ngIf="areaForm.hasError('minlength','name')"
+                        severity="error"
+                        variant="simple"
+                        size="small">El minimo son 6 caracteres</p-message>
+        </div>
+    </div>
+    <div class="field col-4 mb-4">
+        <label for="code">Codigo</label>
+            <input type="text"
+                   pInputText
+                   formControlName="code"
+                   class="w-full"
+                   [readonly] ="dialogMode === 'update' || dialogMode === 'delete'"
+            />
+
+        <div *ngIf="areaForm.get('code')?.invalid && areaForm.get('code')?.dirty || areaForm.get('code')?.touched">
+            <p-message  *ngIf="areaForm.hasError('required','code')"
+                        severity="error"
+                        variant="simple"
+                        size="small">El codigo es requerido </p-message>
+        </div>
+    </div>
+    <div class="col-12 field">
+        <label for="description">Descripcion</label>
+        <textarea   formControlName="description"
+                    class="w-full"
+                    rows="3"
+                    pTextarea
+                    [readonly] ="dialogMode === 'delete'"
+                    [autoResize]="true">
+        </textarea>
+    </div>
+    <div class="col-12 field" >
+            <p-togglebutton [style]="{ width: '8em' }"
+                            formControlName="active"
+                            onIcon="pi pi-check"
+                            offIcon="pi pi-times"
+                            onLabel="Activo"
+                            offLabel="Inactivo">
+            </p-togglebutton>
+    </div>
+    <div class="col-12 field" *ngIf="dialogMode === 'delete'" >
+        <p-message severity="error">
+            <ng-template #icon>
+                <i class="pi pi-trash text-2xl"></i>
+            </ng-template>
+            <span class="ml-2"> La accion es irrebersible, ¿Estas seguro ? </span>
+        </p-message>
+    </div>
+
+
+    <div class="col-12">
+        <hr>
+    </div>
+    <div class="col-12">
+        <div class="flex justify-content-end">
+            <p-button   (onClick)="exitModal()"
+                        [tooltipOptions]="tooltipOption"
+                        icon="pi pi-times"
+                        pTooltip="Cancelar"
+                        severity="secondary"
+                        variant="outlined"
+                        label="Cancelar" />
+            &nbsp;&nbsp;
+            <p-button   *ngIf="dialogMode === 'create'"
+                        (onClick)="create()"
+                        [disabled]="areaForm.invalid || httpLoading"
+                        [tooltipOptions]="tooltipOption || httpLoading"
+                        [tooltipDisabled]="areaForm.invalid || httpLoading"
+                        icon="pi pi-save"
+                        pTooltip="Guardar"
+                        severity="primary"
+                        variant="outlined"
+                        label="Guardar" />
+            <p-button   *ngIf="dialogMode === 'update'"
+                        (onClick)="update()"
+                        [disabled]="areaForm.invalid"
+                        [tooltipOptions]="tooltipOption || httpLoading"
+                        [tooltipDisabled]="areaForm.invalid || httpLoading"
+                        icon="pi pi-save"
+                        pTooltip="Guardar"
+                        severity="success"
+                        variant="outlined"
+                        label="Actualizar" />
+            <p-button   *ngIf="dialogMode === 'delete'"
+                        (onClick)="delete()"
+                        [tooltipOptions]="tooltipOption || httpLoading"
+                        [tooltipDisabled]="areaForm.invalid || httpLoading"
+                        icon="pi pi-trash"
+                        pTooltip="Eliminar"
+                        severity="danger"
+                        variant="outlined"
+                        label="Eliminar" />
+        </div>
+    </div>
+</form>

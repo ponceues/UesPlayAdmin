@@ -1,0 +1,75 @@
+<form [formGroup]="mainForm"  class="formgrid grid">
+    <div class="field col-12">
+        <label for="name">Nombre</label>
+        <input [readOnly]="dialogMode === 'delete'"
+               type="text"
+               pInputText
+               formControlName="name"
+               class="w-full" />
+    </div>
+    <div class="field col-12">
+        <label for="name">Descripción</label>
+        <textarea [readOnly]="dialogMode === 'delete'"
+                  rows="5"
+                  pTextarea
+                  formControlName="description"
+                  class="w-full"></textarea>
+    </div>
+    <div class="field col-12 flex justify-between">
+        <p-togglebutton [disabled] ="dialogMode === 'delete'"
+                        [style]="{ width: '8em' }"
+                        formControlName="isActive"
+                        onIcon="pi pi-check"
+                        offIcon="pi pi-times"
+                        onLabel="Activo"
+                        offLabel="Inactivo"
+                        >
+        </p-togglebutton>
+    </div>
+    <div class="col-12">
+        <p-message *ngIf="dialogMode === 'delete'"
+                   icon="pi pi-exclamation-triangle"
+                   severity="error">¿Estás seguro de proceder con la eliminación?, esta acción no es reversible </p-message>
+    </div>
+    <div class="col-12 flex justify-end mt-4">
+        <p-button   (onClick)="exitModal()"
+                    [tooltipOptions]="tooltipOption"
+                    icon="pi pi-times"
+                    pTooltip="Cancelar"
+                    severity="secondary"
+                    variant="outlined"
+                    label="Cancelar" />
+        &nbsp;
+        <p-button   *ngIf="dialogMode === 'create'"
+                    (onClick)="createRol()"
+                    [disabled]="mainForm.invalid || httpLoading"
+                    [tooltipOptions]="tooltipOption"
+                    [tooltipDisabled]="httpLoading"
+                    icon="pi pi-save"
+                    pTooltip="Guardar"
+                    variant="outlined"
+                    severity="success"
+                    label="Guardar" />
+
+        <p-button   *ngIf="dialogMode === 'update'"
+                    (onClick)="updateRol()"
+                    [tooltipOptions]="tooltipOption"
+                    [tooltipDisabled]="httpLoading"
+                    [disabled]="httpLoading || mainForm.invalid"
+                    pTooltip="Actualizar"
+                    icon="pi pi-save"
+                    variant="outlined"
+                    severity="success"
+                    label="Actualizar" />
+        <p-button   *ngIf="dialogMode === 'delete'"
+                    (onClick)="deleteRol()"
+                    [tooltipOptions]="tooltipOption"
+                    [tooltipDisabled]="httpLoading"
+                    [disabled]="httpLoading"
+                    pTooltip="Eliminar"
+                    icon="pi pi-trash"
+                    variant="outlined"
+                    severity="danger"
+                    label="Eliminar" />
+    </div>
+</form>

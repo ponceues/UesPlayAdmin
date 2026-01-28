@@ -1,0 +1,11 @@
+.file-btn{
+    width: 4rem;
+    &:hover{
+        color:#8B0E13 !important;
+        cursor: pointer;
+        background-color: #fbf7f4;
+    }
+}
+.file-type{
+    width: 3rem;
+}

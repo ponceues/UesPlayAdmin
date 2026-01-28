@@ -1,0 +1,141 @@
+<form [formGroup]="userForm" class="grid formgrid">
+    <div class="field col-12 mb-4">
+        <label for="name">Nombre de usuario</label>
+        <p-iconfield>
+            <p-inputicon class="pi pi-user" />
+            <input type="text"
+                   formControlName="name"
+                   class="w-full"
+                   placeholder="usuario"
+                   pInputText/>
+        </p-iconfield>
+
+        <div *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.dirty || userForm.get('name')?.touched">
+            <p-message  *ngIf="userForm.hasError('required','name')"
+                        severity="error"
+                        variant="simple"
+                        size="small">El nombre de usuario es requerido</p-message>
+            <p-message  *ngIf="userForm.hasError('minlength','name')"
+                        severity="error"
+                        variant="simple"
+                        size="small">El minimo son 6 caracteres</p-message>
+        </div>
+    </div>
+    <div class="field col-12 mb-4">
+        <label for="name">Correo electronico</label>
+        <p-iconfield>
+            <p-inputicon class="pi pi-envelope" />
+            <input type="text"
+                   formControlName="email"
+                   class="w-full"
+                   [readonly] ="dialogMode === 'update' || dialogMode === 'delete'"
+                   pInputText
+                   placeholder="ejemplo@ues.edu.sv"/>
+        </p-iconfield>
+
+        <div *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.dirty || userForm.get('email')?.touched">
+            <p-message  *ngIf="userForm.hasError('required','email')"
+                        severity="error"
+                        variant="simple"
+                        size="small">El email es requerido </p-message>
+            <p-message  *ngIf="userForm.hasError('email','email')"
+                        severity="error"
+                        variant="simple"
+                        size="small">El formato es invalido</p-message>
+        </div>
+    </div>
+    <div class="field col-12  mb-4">
+        <label for="area">Areas</label>
+        <p-multiselect  [options]="areas"
+                        formControlName="areasCodes"
+                        optionLabel="name"
+                        optionValue="areaId"
+                        appendTo="body"
+                        display="chip"
+                        placeholder="Seleccione areas"
+                        class="w-full"
+                        (onChange)="onAreasChange($event.value)">
+        </p-multiselect>
+        <div *ngIf="userForm.get('rolId')?.invalid && userForm.get('rolId')?.dirty || userForm.get('rolId')?.touched">
+            <p-message  *ngIf="userForm.hasError('required','rolId')"
+                        severity="error"
+                        variant="simple"
+                        size="small">
+                El campo es requerido
+            </p-message>
+        </div>
+    </div>
+
+    <div class="field col-6  mb-4">
+        <label for="area">Rol</label>
+        <p-select [options]="roles"
+                  optionLabel="name"
+                  optionValue="rolId"
+                  placeholder="Seleccione rol"
+                  formControlName="rolId"
+                  appendTo="body"
+                  class="w-full md:w-56" />
+        <div *ngIf="userForm.get('rolId')?.invalid && userForm.get('rolId')?.dirty || userForm.get('rolId')?.touched">
+            <p-message  *ngIf="userForm.hasError('required','rolId')"
+                        severity="error"
+                        variant="simple"
+                        size="small">
+                El campo es requerido
+            </p-message>
+        </div>
+    </div>
+
+    <div *ngIf="dialogMode !== 'create'" class="field col-6 mb-4">
+        <label for="area">Estado</label>
+        <p-select [options]="userStates"
+                  optionLabel="name"
+                  optionValue="stateId"
+                  placeholder="Seleccione estado"
+                  formControlName="stateId"
+                  appendTo="body"
+                  class="w-full md:w-56" />
+        <div    *ngIf="userForm.get('stateId')?.invalid && userForm.get('stateId')?.dirty || userForm.get('stateId')?.touched">
+            <p-message  *ngIf="userForm.hasError('required','stateId')"
+                        severity="error"
+                        variant="simple"
+                        size="small">
+                Este campo es requerido
+            </p-message>
+        </div>
+    </div>
+    <div class="col-12">
+        <hr>
+    </div>
+    <div class="col-12">
+        <div class="flex justify-content-end">
+            <p-button   (onClick)="exitModal()"
+                        [tooltipOptions]="tooltipOption"
+                        icon="pi pi-times"
+                        pTooltip="Cancelar"
+                        severity="secondary"
+                        variant="outlined"
+                        label="Cancelar" />
+            &nbsp;&nbsp;
+            <p-button   *ngIf="dialogMode === 'create'"
+                        (onClick)="createUser()"
+                        [disabled]="userForm.invalid"
+                        [tooltipOptions]="tooltipOption || httpLoading"
+                        [tooltipDisabled]="userForm.invalid || httpLoading"
+                        icon="pi pi-save"
+                        pTooltip="Guardar"
+                        severity="success"
+                        variant="outlined"
+                        label="Guardar" />
+            <p-button   *ngIf="dialogMode === 'update'"
+                        (onClick)="updateUser()"
+                        [disabled]="userForm.invalid"
+                        [tooltipOptions]="tooltipOption || httpLoading"
+                        [tooltipDisabled]="userForm.invalid || httpLoading"
+                        icon="pi pi-save"
+                        pTooltip="Guardar"
+                        severity="success"
+                        variant="outlined"
+                        label="Actualizar" />
+        </div>
+    </div>
+</form>

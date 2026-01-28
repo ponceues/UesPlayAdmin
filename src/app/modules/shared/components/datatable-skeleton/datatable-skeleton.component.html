@@ -1,0 +1,58 @@
+<div class="grid">
+    <div class="col-12 pl-4">
+        <div class="grid">
+            <div class="col-3">
+                <p-skeleton height="2rem" class="mb-2"  />
+            </div>
+            <div class="col-2 flex justify-content-start">
+                <p-skeleton size="2rem" class="mr-2" />
+                <p-skeleton size="2rem" class="mr-2" />
+            </div>
+            <div class="col-1"></div>
+            <div class="col-4"></div>
+            <div class="col-2">
+                <div class="flex justify-content-end">
+                    <p-skeleton size="2rem" class="mr-2" />
+                    <p-skeleton size="2rem" class="mr-2" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-12 mt-3">
+            <p-table [value]="skeletons!" responsiveLayout="scroll">
+                <ng-template #header>
+                    <tr>
+                        <th><p-skeleton height="1.5rem" class="mb-2"  /></th>
+                        <th>
+                            <p-skeleton height="1.5rem" class="mb-2"  />
+                        </th>
+                        <th>
+                            <p-skeleton height="1.5rem" class="mb-2"  />
+                        </th>
+                        <th style="width: 16rem">
+                            <p-skeleton height="1.5rem" class="mb-2"  />
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-entity>
+                    <tr>
+                        <td>
+                            <p-skeleton height="1.5rem" class="mb-2"  />
+                        </td>
+                        <td>
+                            <p-skeleton height="1.5rem" class="mb-2"  />
+                        </td>
+                        <td><p-skeleton height="1.5rem" class="mb-2"  /></td>
+                        <td style="width: 16rem">
+                            <div class="flex justify-content-center">
+                                <p-skeleton size="2rem" class="mr-2" />
+                                <p-skeleton size="2rem" class="mr-2" />
+                            </div>
+
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+    </div>
+</div>

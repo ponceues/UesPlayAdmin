@@ -90,6 +90,7 @@ declare type SurfacesType = {
         class: 'hidden absolute top-[3.25rem] right-0 w-72 p-4 bg-surface-0 dark:bg-surface-900 border border-surface rounded-border origin-top shadow-[0px_3px_5px_rgba(0,0,0,0.02),0px_0px_2px_rgba(0,0,0,0.05),0px_1px_4px_rgba(0,0,0,0.08)]'
     }
 })
+
 export class AppConfigurator {
     router = inject(Router);
 
@@ -135,20 +136,20 @@ export class AppConfigurator {
             }
         },
         {
-            name: 'gray',
+            name: 'ues-play',
             palette: {
                 0: '#ffffff',
-                50: '#f9fafb',
-                100: '#f3f4f6',
-                200: '#e5e7eb',
-                300: '#d1d5db',
-                400: '#9ca3af',
-                500: '#6b7280',
-                600: '#4b5563',
-                700: '#374151',
-                800: '#1f2937',
-                900: '#111827',
-                950: '#030712'
+                50: '#E8F4F6',
+                100: '#C2E2E8',
+                200: '#9BCFDB',
+                300: '#74BCCE',
+                400: '#4DAAC4',
+                500: '#1F7A8C',
+                600: '#1B6B7D',
+                700: '#175C6D',
+                800:'#134D5D',
+                900: '#0F3E4D',
+                950: '#0A2A35'
             }
         },
         {
@@ -276,8 +277,23 @@ export class AppConfigurator {
                 palette: presetPalette?.[color as KeyOfType<typeof presetPalette>] as SurfacesType['palette']
             });
         });
-
-        return palettes;
+        palettes.push({
+            name: 'ues-play',
+            palette: {
+                50: '#F4D6D7',
+                100: '#E8AEB0',
+                200: '#DC8689',
+                300: '#CF5E61',
+                400: '#C3373A',
+                500: '#8B0E13',
+                600: '#710B0F',
+                700: '#57090B',
+                800: '#3D0608',
+                900: '#240405',
+                950: '#130202'
+            }
+        });
+            return palettes;
     });
 
     getPresetExt() {

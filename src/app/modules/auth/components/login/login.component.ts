@@ -1,0 +1,89 @@
+import { Component, effect, inject, signal } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors   } from '@angular/forms';
+
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
+import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { RippleModule } from 'primeng/ripple';
+import { Router } from '@angular/router';
+import { Message } from 'primeng/message';
+import { NgIf } from '@angular/common';
+import { AuthService } from '@auth/services/auth/auth.service';
+import { AppStorageService } from '@shared/services/app-storage/app-storage.service';
+import { AppConfigurator } from '../../../../layout/component/app.configurator';
+
+
+
+export interface layoutConfig {
+    preset?: string;
+    primary?: string;
+    surface?: string | undefined | null;
+    darkTheme?: boolean;
+    menuMode?: string;
+}
+
+@Component({
+    selector: 'app-login',
+    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, ReactiveFormsModule, Message, NgIf, AppConfigurator],
+    templateUrl: './login.component.html',
+    styleUrl: './login.component.scss'
+})
+export class LoginComponent {
+    private localStorageService: AppStorageService = inject(AppStorageService);
+    private authService: AuthService = inject(AuthService);
+    private formBuilder: FormBuilder = inject(FormBuilder);
+    private router: Router = inject(Router);
+
+    httpLoading: boolean = false;
+    loginForm!: FormGroup;
+    private initialized = false;
+    constructor() {}
+
+    ngOnInit(): void {
+        this.buildLoginForm();
+    }
+
+    loginFn(): void {
+        let request = this.loginForm.value;
+        this.httpLoading = true;
+        this.authService.login(request).subscribe({
+            next: (res) => {
+                this.localStorageService.setItem('authJwt', JSON.stringify(res));
+                this.loadAndSaveUserInfo();
+            },
+            error: (err) => {
+                this.httpLoading = false;
+            }
+        });
+    }
+
+    goToStart(): void {
+        this.router.navigate(['/']);
+    }
+
+    loadAndSaveUserInfo(): void {
+        this.authService.getUserInformation().subscribe({
+            next: (res) => {
+                this.localStorageService.setItem('menus', JSON.stringify(res.menus));
+                this.localStorageService.setItem('areas', JSON.stringify(res.areas));
+                this.localStorageService.setItem('user', JSON.stringify(res.state));
+                const permissionCodes = res.permissions?.map((permission: any) => permission.code) || [];
+                this.localStorageService.setItem('permissions', JSON.stringify(permissionCodes));
+                this.router.navigate(['/admin']);
+            },
+            error: (err) => {
+                this.httpLoading = false;
+            }
+        });
+    }
+
+    private buildLoginForm(): void {
+        this.loginForm = this.formBuilder.group({
+            email: [null, [Validators.required, Validators.email]],
+            password: [null, [Validators.required, Validators.minLength(6)]]
+        });
+    }
+}

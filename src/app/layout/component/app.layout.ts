@@ -1,21 +1,34 @@
-import { Component, Renderer2, ViewChild } from '@angular/core';
+import { Component, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { filter, Subscription } from 'rxjs';
+import { ActivatedRoute,NavigationEnd, Router, RouterModule } from '@angular/router';
+import { MenuItem } from 'primeng/api';
+import { filter, Observable, Subscription } from 'rxjs';
 import { AppTopbar } from './app.topbar';
 import { AppSidebar } from './app.sidebar';
 import { AppFooter } from './app.footer';
 import { LayoutService } from '../service/layout.service';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
 
 @Component({
     selector: 'app-layout',
     standalone: true,
-    imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter],
-    template: `<div class="layout-wrapper" [ngClass]="containerClass">
+    imports: [
+        CommonModule,
+        AppTopbar,
+        AppSidebar,
+        RouterModule,
+        AppFooter,
+        BreadcrumbModule
+    ],
+    template: `
+    <div class="layout-wrapper" [ngClass]="containerClass">
         <app-topbar></app-topbar>
         <app-sidebar></app-sidebar>
         <div class="layout-main-container">
             <div class="layout-main">
+                <p-breadcrumb [model]="breadcrumbItems" [home]="home">
+                    <ng-template #separator> / </ng-template>
+                </p-breadcrumb>
                 <router-outlet></router-outlet>
             </div>
             <app-footer></app-footer>
@@ -23,10 +36,15 @@ import { LayoutService } from '../service/layout.service';
         <div class="layout-mask animate-fadein"></div>
     </div> `
 })
-export class AppLayout {
+export class AppLayout implements OnInit {
     overlayMenuOpenSubscription: Subscription;
-
     menuOutsideClickListener: any;
+    breadcrumbItems: MenuItem[] = [];
+    home: MenuItem = {
+        label: 'UesPlay',
+        icon: 'pi pi-home',
+        disabled: true,
+    };
 
     @ViewChild(AppSidebar) appSidebar!: AppSidebar;
 
@@ -35,7 +53,9 @@ export class AppLayout {
     constructor(
         public layoutService: LayoutService,
         public renderer: Renderer2,
-        public router: Router
+        private router: Router,
+        private route: ActivatedRoute
+
     ) {
         this.overlayMenuOpenSubscription = this.layoutService.overlayOpen$.subscribe(() => {
             if (!this.menuOutsideClickListener) {
@@ -54,6 +74,16 @@ export class AppLayout {
         this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
             this.hideMenu();
         });
+
+    }
+
+    ngOnInit() {
+        this.router.events
+            .pipe(filter(event => event instanceof NavigationEnd))
+            .subscribe(() => {
+                this.buildBreadcrumb();
+            });
+        this.buildBreadcrumb();
     }
 
     isOutsideClicked(event: MouseEvent) {
@@ -97,6 +127,28 @@ export class AppLayout {
             'layout-overlay-active': this.layoutService.layoutState().overlayMenuActive,
             'layout-mobile-active': this.layoutService.layoutState().staticMenuMobileActive
         };
+    }
+
+    private buildBreadcrumb(): void {
+        const breadcrumbs: MenuItem[] = [];
+        let currentRoute = this.route.root;
+        let url = '';
+
+        while (currentRoute.firstChild) {
+            currentRoute = currentRoute.firstChild;
+            const routeSnapshot = currentRoute.snapshot;
+
+            const routeURL = routeSnapshot.url.map(segment => segment.path).join('/');
+            if (routeURL) {
+                url += `/${routeURL}`;
+            }
+
+            const label = routeSnapshot.data['breadcrumb'];
+            if (label) {
+                breadcrumbs.push({ label, routerLink: url,disabled:true });
+            }
+        }
+        this.breadcrumbItems = breadcrumbs;
     }
 
     ngOnDestroy() {

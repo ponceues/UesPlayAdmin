@@ -1,0 +1,351 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="font-semibold text-xl mb-6"> Recursos</h4>
+            </div>
+            <div *ngIf="!loadingPage" class="card-body">
+                <p-table    #mainTable
+                            (onLazyLoad)="fetchResources($event)"
+                            [value]="resources"
+                            [paginator]="true"
+                            [totalRecords]="meta.count"
+                            [rows]="meta.pageSize"
+                            [lazy]="true"
+                            [lazyLoadOnInit]="false"
+                            [showCurrentPageReport]="true"
+                            [loading]="loadingTable"
+                            currentPageReportTemplate=" Mostrando {first} - {last} de {totalRecords} elementos">
+                    <ng-template #caption>
+                        <div class="grid flex justify-between items-center">
+                            <form [formGroup]="filterForm" class="formgroup-inline">
+
+                                <div class="field">
+                                    <p-iconfield iconPosition="left" class="ml-auto">
+                                        <p-inputicon>
+                                            <i class="pi pi-search"></i>
+                                        </p-inputicon>
+                                        <input  formControlName="text"
+                                                pInputText
+                                                type="text"
+                                                placeholder="Buscar"
+                                        />
+                                    </p-iconfield>
+                                </div>
+
+                                <div class="field">
+                                    <p-select [options]="resourceStates"
+                                              formControlName="stateId"
+                                              optionLabel="name"
+                                              optionValue="stateId"
+                                              placeholder="Seleccione" />
+                                </div>
+                                <div class="field">
+                                    <p-select [options]="areas"
+                                              formControlName="areaId"
+                                              optionLabel="name"
+                                              optionValue="areaId"
+                                              placeholder="Seleccione" />
+                                </div>
+
+                                <p-button   [icon]="'pi pi-filter'"
+                                            (onClick)="fetchResources()"
+                                            [tooltipOptions]="tooltipOption"
+                                            [pTooltip]="'Aplicar filtros'"
+                                            [disabled]="!availableFiltered"
+                                            [tooltipDisabled]="!availableFiltered"
+                                            severity="primary"
+                                            variant="outlined" />
+                                &nbsp;
+                                <p-button   [icon]="'pi pi-filter-slash'"
+                                            (onClick)=" clearFilters()"
+                                            [tooltipOptions]="tooltipOption"
+                                            [pTooltip]=" 'Remover filtros'"
+                                            [tooltipDisabled]="!filteredTable"
+                                            [disabled]="!filteredTable"
+                                            severity="secondary"
+                                            variant="outlined" />
+                            </form>
+
+                            <div>
+                                <p-button   *ngIf="permissions.includes('can.create.resource')"
+                                            (onClick)="showCreate = !showCreate"
+                                            icon="pi pi-plus"
+                                            pTooltip="Registrar rol"
+                                            [tooltipOptions]="tooltipOption"
+                                            variant="outlined"
+                                            label="Agregar" />
+                            </div>
+                        </div>
+
+
+                    </ng-template>
+
+                    <ng-template #header>
+                        <tr>
+                            <th>Titulo</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Area</th>
+                            <th>
+                                <i class="pi pi-download"></i> &nbsp; descargas
+                            </th>
+                            <th>Fecha creacion</th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template #body let-entity>
+                        <tr>
+                            <td style="max-width: 20rem;">{{ entity.title }}</td>
+                            <td style="max-width: 20rem;"
+                                class="white-space-nowrap overflow-hidden text-overflow-ellipsis" >
+                                {{ entity.description }}
+                            </td>
+                            <td>
+                                <p-tag  *ngIf="entity.state.code === resourceStatesEnum.Created"
+                                        [style]="{   border: '2px solid var(--p-surface-100)',
+                                                    background:'var(--p-surface-100)',
+                                                    color:'var(--p-surface-600)'}" >
+                                    <div class="flex items-center">
+                                        <span class="pr-1">
+                                            <i class="pi pi-eraser text-sm font-bold"></i>
+                                        </span>
+                                        <span class="text-sm">
+                                            Borrador
+                                        </span>
+                                    </div>
+                                </p-tag>
+                                <p-tag  *ngIf="entity.state.code === resourceStatesEnum.Pending"
+                                        [style]="{   border: '2px solid var(--p-orange-100)',
+                                                    background:'var(--p-orange-100)',
+                                                    color:'var(--p-orange-700)'}" >
+                                    <div class="flex items-center">
+                                        <span class="pr-1">
+                                            <i class="pi pi-pause text-sm font-bold"></i>
+                                        </span>
+                                        <span class="text-sm">
+                                            Pendiente
+                                        </span>
+                                    </div>
+                                </p-tag>
+                                <p-tag  *ngIf="entity.state.code === resourceStatesEnum.Published"
+                                        [style]="{   border: '2px solid var(--p-green-100)',
+                                                    background:'var(--p-green-100)',
+                                                    color:'var(--p-green-700)'}" >
+                                    <div class="flex items-center">
+                                        <span class="pr-1">
+                                            <i class="pi pi-play text-sm font-bold"></i>
+                                        </span>
+                                        <span class="text-sm">
+                                            Publicado
+                                        </span>
+                                    </div>
+                                </p-tag>
+                                <p-tag  *ngIf="entity.state.code === resourceStatesEnum.Rejected"
+                                        [style]="{   border: '2px solid var(--p-red-100)',
+                                                    background:'var(--p-red-100)',
+                                                    color:'var(--p-red-700)'}" >
+                                    <div class="flex items-center">
+                                        <span class="pr-1">
+                                            <i class="pi pi-times text-sm font-bold"></i>
+                                        </span>
+                                        <span class="text-sm">
+                                            Rechazado
+                                        </span>
+                                    </div>
+                                </p-tag>
+                            </td>
+                            <td>
+                                <p-chip label="{{entity.area.code}}" icon="pi pi-sitemap" />
+                            </td>
+                            <td>
+                            <p-tag [style]="{ border: '2px solid var(--p-sky-100)', background: 'var(--p-sky-100)', color: 'var(--p-sky-700)'}">
+                                <div class="flex items-center">
+                                    <span class="text-sm pr-1 font-bold">
+                                        {{entity.downloads}}
+                                    </span>
+                                    <span class="text-sm">
+                                        Descargas
+                                    </span>
+                                </div>
+                            </p-tag>
+                            </td>
+                            <td>
+                                {{ entity.createdAt | date:'dd/MM/yyyy':'UTC-6' }}
+                            </td>
+                            <td>
+                                <p-button   *ngIf="permissions.includes('can.update.resource')"
+                                            (onClick)="manageResource(entity)"
+                                            [rounded]="true"
+                                            [outlined]="true"
+                                            [tooltipOptions]="tooltipOption"
+                                            icon="pi pi-cog"
+                                            severity="secondary"
+                                            pTooltip="Editar recurso"/>
+                                &nbsp;
+                                <p-button   *ngIf="permissions.includes('can.manage.resource')"
+                                            (onClick)="showUpdateState(entity)"
+                                            [rounded]="true"
+                                            [outlined]="true"
+                                            [tooltipOptions]="tooltipOption"
+                                            icon="pi pi-wrench"
+                                            pTooltip="Validar estado"
+                                            severity="secondary"/>
+                                &nbsp;
+                                <p-button   *ngIf="permissions.includes('can.preview.resource') && (entity.state.code === resourceStatesEnum.Published || entity.state.code === resourceStatesEnum.Pending)"
+                                            [rounded]="true"
+                                            [outlined]="true"
+                                            (onClick)="previewResource(entity)"
+                                            [tooltipOptions]="tooltipOption"
+                                            icon="pi pi-eye"
+                                            pTooltip="Previsualizar recurso"
+                                            severity="secondary"/>
+
+                            </td>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template #emptymessage>
+                        <tr>
+                            <td colspan="6" style="text-align: center">No se han encontrado registros.</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+
+                <p-dialog   header="Nuevo recurso"
+                            [modal]="true"
+                            (onHide)="cleanCreateModal()"
+                            [draggable]="false"
+                            [(visible)]="showCreate"
+                            [style]="{ width: '40rem' }">
+                    <form [formGroup]="createform" class="grid form-grid" >
+                        <div class="field col-12">
+                            <label for="name">Titulo</label>
+                            <input type="text"
+                                   pInputText
+                                   formControlName="title"
+                                   class="w-full" />
+                            <div *ngIf="createform.get('title')?.invalid && createform.get('title')?.dirty || createform.get('title')?.touched">
+                                <p-message  *ngIf="createform.hasError('required','title')"
+                                            severity="error"
+                                            variant="simple"
+                                            size="small">El titulo es requerido
+                                </p-message>
+                            </div>
+                        </div>
+
+                        <div class="field col-6">
+                            <label for="areaId">Area</label>
+                            <p-select [options]="areas"
+                                      optionLabel="name"
+                                      appendTo="body"
+                                      formControlName="areaId"
+                                      optionValue="areaId"
+                                      placeholder="Seleccione area"
+                                      class="w-full" />
+                            <div *ngIf="createform.get('areaId')?.invalid && createform.get('areaId')?.dirty || createform.get('areaId')?.touched">
+                                <p-message  *ngIf="createform.hasError('required','areaId')"
+                                            severity="error"
+                                            variant="simple"
+                                            size="small">
+                                    Selecione area
+                                </p-message>
+                            </div>
+                        </div>
+
+                        <div class="field col-6">
+                            <label for="typeId">Tipo de recurso</label>
+                            <p-select [options]="resourceTypes"
+                                      appendTo="body"
+                                      optionLabel="name"
+                                      optionValue="typeId"
+                                      formControlName="typeId"
+                                      placeholder="Seleccione tipo"
+                                      class="w-full" >
+                            </p-select>
+                            <div *ngIf="createform.get('typeId')?.invalid && createform.get('typeId')?.dirty || createform.get('typeId')?.touched">
+                                <p-message  *ngIf="createform.hasError('required','typeId')"
+                                            severity="error"
+                                            variant="simple"
+                                            size="small">
+                                    Selecione tipo de recurso
+                                </p-message>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="description">Descripcion</label>
+                            <textarea pTextarea
+                                      class="w-full"
+                                      formControlName="description"
+                                      autoResize
+                                      rows="10">
+
+                            </textarea>
+                            <div *ngIf="createform.get('description')?.invalid && createform.get('description')?.dirty || createform.get('description')?.touched">
+                                <p-message  *ngIf="createform.hasError('required','descrioption')"
+                                            severity="error"
+                                            variant="simple"
+                                            size="small">
+                                    La descripcion es requeridas
+                                </p-message>
+                            </div>
+                        </div>
+
+                    </form>
+
+                    <ng-template #footer>
+                        <p-button   (click)="showCreate = false"
+                                    [outlined]="true"
+                                    icon="pi pi-times"
+                                    label="Cancelar"
+                                    severity="secondary"  />
+                        <p-button   (click)="createResource()"
+                                    [outlined]="true"
+                                    [disabled]="!createform.valid || httpLoading"
+                                    icon="pi pi-save"
+                                    label="Guardar"
+                                    severity="primary"  />
+                    </ng-template>
+                </p-dialog>
+
+                <p-dialog   header="Actualizar recurso"
+                            *ngIf="loadingStates"
+                            [modal]="true"
+                            (onHide)="selectedState = null; this.showStateModal =false;"
+                            [(visible)]="showStateModal"
+                            [draggable]="false"
+                            [style]="{ width: '30rem' }">
+                    <div class="grid">
+                        <div class="col-12">
+                            <p-select [options]="resourceStates"
+                                      optionLabel="name"
+                                      appendTo="body"
+                                      [(ngModel)]="selectedState"
+                                      placeholder="Seleccione estado"
+                                      class="w-full" />
+                        </div>
+                    </div>
+                    <ng-template #footer>
+                        <p-button   (click)="showStateModal = false"
+                                    [outlined]="true"
+                                    icon="pi pi-times"
+                                    label="Cancelar"
+                                    severity="secondary"  />
+
+                        <p-button   (click)="updateResourceState()"
+                                    [disabled]="selectedResource?.stateId === selectedState!.stateId"
+                                    [outlined]="true"
+                                    icon="pi pi-save"
+                                    label="Guardar"
+                                    severity="primary"  />
+                    </ng-template>
+                </p-dialog>
+
+            </div>
+            <div *ngIf="loadingPage" class="card-body">
+                <app-datatable-skeleton></app-datatable-skeleton>
+            </div>
+        </div>
+    </div>
+</div>
