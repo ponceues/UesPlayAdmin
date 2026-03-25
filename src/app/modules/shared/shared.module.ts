@@ -22,7 +22,8 @@ import {
     ListChevronsDownUpIcon,
     MessageSquare,
     BadgeCheck,
-    Settings
+    Settings,
+    LogIn
 } from 'lucide-angular';
 
 const icons = {
@@ -41,7 +42,8 @@ const icons = {
     ListChevronsDownUpIcon,
     MessageSquare,
     BadgeCheck,
-    Settings
+    Settings,
+    LogIn
 };
 
 @NgModule({

@@ -28,7 +28,6 @@ export class LayoutService {
     resourceType$ = this.resourceType.asObservable();
     private initialized = false;
     constructor() {
-        console.log('LayoutService initialized');
         effect(() => {
             const config = this.layoutConfig();
             if (config) {
@@ -58,6 +57,5 @@ export class LayoutService {
     onConfigUpdate() {
         this._config = { ...this.layoutConfig() };
         this.configUpdate.next(this.layoutConfig());
-        console.log("onConfigUpdate V2");
     }
 }

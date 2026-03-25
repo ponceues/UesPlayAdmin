@@ -13,7 +13,7 @@ import { ResourceType } from '../../interfaces/resource-type';
 
 export class ResourceTypeService {
     private http:HttpClient = inject(HttpClient);
-    private uesPlayApi =`${environment.UesPlayApi}/admin/resource/types`;
+    private uesPlayApi =`${environment.UesPlayApi}/resources-types`;
 
     constructor() { }
 

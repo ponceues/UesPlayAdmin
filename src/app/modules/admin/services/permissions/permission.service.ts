@@ -14,7 +14,7 @@ import { catchError } from 'rxjs/operators';
 export class PermissionService {
 
     private httpClient:HttpClient = inject(HttpClient);
-    private uesPlayApi =`${environment.UesPlayApi}/admin/catalogs/permissions`;
+    private uesPlayApi =`${environment.UesPlayApi}/admin/permissions`;
 
     constructor() { }
 

@@ -57,7 +57,7 @@
                             </form>
 
                             <div>
-                                <p-button   *ngIf="permissions.includes('can.create.area')"
+                                <p-button   *ngIf="permissions.includes('can.create.areas')"
                                             (onClick)="showCreateEntity()"
                                             icon="pi pi-plus"
                                             pTooltip="Registrar usuario"
@@ -96,7 +96,7 @@
                                 {{ entity.updatedAt | date:'dd/MM/yyyy':'UTC-6' }}
                             </td>
                             <td class="text-center">
-                                <p-button   *ngIf="permissions.includes('can.update.area')"
+                                <p-button   *ngIf="permissions.includes('can.update.areas')"
                                             [disabled]="entity.isDefault"
                                             (onClick)="showUpdateEntity(entity)"
                                             [rounded]="true"
@@ -106,7 +106,7 @@
                                             severity="secondary"
                                             pTooltip="Actualizar curso"/>
                                 &nbsp;
-                                <p-button   *ngIf="permissions.includes('can.delete.area')"
+                                <p-button   *ngIf="permissions.includes('can.delete.areas')"
                                             (onClick)="showDelete(entity)"
                                             [rounded]="true"
                                             [outlined]="true"

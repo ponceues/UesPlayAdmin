@@ -1,9 +1,7 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
 export const tokenJwtInterceptor: HttpInterceptorFn = (req, next) => {
-    const excludedUrls = [
-        '/auth/login',
-    ];
+    const excludedUrls = ['/auth/login'];
     const shouldExclude = excludedUrls.some(url => req.url.includes(url));
 
     if (shouldExclude) {

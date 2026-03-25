@@ -12,12 +12,12 @@ import { ResourceState } from '@admin/interfaces/resource-state';
   providedIn: 'root'
 })
 export class ResourceStateService {
-    private uesPlayApi =`${environment.UesPlayApi}/uesplay/catalogs/resourceStates`;
+    private uesPlayApi =`${environment.UesPlayApi}/admin`;
 
     constructor(private http:HttpClient) { }
 
     fetch(filter:Filter):Observable<Envelop<ResourceState>>{
-        let requestUrl = `${this.uesPlayApi}?page=${filter.page}&pageSize=${filter.pageSize}`;
+        let requestUrl = `${this.uesPlayApi}/resources-states?page=${filter.page}&pageSize=${filter.pageSize}`;
 
         return this.http.get<Envelop<ResourceState>>(
             `${requestUrl}`

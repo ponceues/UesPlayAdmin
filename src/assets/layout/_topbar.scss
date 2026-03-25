@@ -114,7 +114,7 @@
             display: inline-flex;
         }
 
-        .layout-topbar-menu {
+        .layout-topbar-menu0 {
             position: absolute;
             background-color: var(--surface-overlay);
             transform-origin: top;
@@ -154,7 +154,7 @@
         }
 
         .layout-topbar-menu-content {
-            flex-direction: column;
+            //flex-direction: column;
         }
     }
 }

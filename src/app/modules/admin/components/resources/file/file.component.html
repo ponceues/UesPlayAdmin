@@ -10,7 +10,10 @@
     </div>
     <div class="flex">
         <span class="file-btn flex justify-center align-items-center text-gray-700">
-            <lucide-icon (click)="onRemoveFile()" name="trash-2"></lucide-icon>
+            <lucide-icon *ngIf="permissions.includes('can.delete.resources.files')"
+                         (click)="onRemoveFile()"
+                         name="trash-2">
+            </lucide-icon>
         </span>
     </div>
 </div>

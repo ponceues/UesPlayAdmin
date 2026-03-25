@@ -9,66 +9,79 @@ import { Envelop } from '@shared/interfaces/envelop';
 import { Area } from '@admin/interfaces/area';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class AreasService {
+    private uesPlayApi = `${environment.UesPlayApi}/admin/resource-areas`;
 
-    private uesPlayApi =`${environment.UesPlayApi}/admin/resource-areas`;
+    constructor(private http: HttpClient) {}
+    list(filter: Filter): Observable<Envelop<Area>> {
+        let requestUrl = `${environment.UesPlayApi}/admin/resources-areas?page=${filter.page}&pageSize=${filter.pageSize}`;
 
-    constructor(private http:HttpClient) { }
-
-    fetch(filter:Filter):Observable<Envelop<Area>>{
-        let requestUrl = `${this.uesPlayApi}?page=${filter.page}&pageSize=${filter.pageSize}`;
-
-        if(filter.text !== null){
+        if (filter.text !== null) {
             requestUrl = `${requestUrl}&text=${filter.text}`;
         }
 
-        if(filter.state !== null){
+        if (filter.state !== null) {
             requestUrl = `${requestUrl}&available=${filter.state}`;
         }
 
-        return this.http.get<Envelop<Area>>(
-            `${requestUrl}`
-        ).pipe(
-            catchError((err: HttpErrorResponse) => {return this.handleErrors(err)})
+        return this.http.get<Envelop<Area>>(`${requestUrl}`).pipe(
+            catchError((err: HttpErrorResponse) => {
+                return this.handleErrors(err);
+            })
         );
     }
 
-    create(request:any):Observable<Area>{
+    fetch(filter: Filter): Observable<Envelop<Area>> {
+        let requestUrl = `${this.uesPlayApi}?page=${filter.page}&pageSize=${filter.pageSize}`;
+
+        if (filter.text !== null) {
+            requestUrl = `${requestUrl}&text=${filter.text}`;
+        }
+
+        if (filter.state !== null) {
+            requestUrl = `${requestUrl}&available=${filter.state}`;
+        }
+
+        return this.http.get<Envelop<Area>>(`${requestUrl}`).pipe(
+            catchError((err: HttpErrorResponse) => {
+                return this.handleErrors(err);
+            })
+        );
+    }
+
+    create(request: any): Observable<Area> {
         let requestUrl = `${this.uesPlayApi}`;
 
-        return this.http.post<Area>(
-            requestUrl,
-            request
-        ).pipe(
-            catchError((err: HttpErrorResponse) => {return this.handleErrors(err)})
+        return this.http.post<Area>(requestUrl, request).pipe(
+            catchError((err: HttpErrorResponse) => {
+                return this.handleErrors(err);
+            })
         );
     }
 
-    update(area:Area):Observable<Area>{
+    update(area: Area): Observable<Area> {
         let requestUrl = `${this.uesPlayApi}/${area.areaId}`;
 
-        return this.http.post<Area>(
-            requestUrl,
-            area
-        ).pipe(
-            catchError((err: HttpErrorResponse) => {return this.handleErrors(err)})
+        return this.http.post<Area>(requestUrl, area).pipe(
+            catchError((err: HttpErrorResponse) => {
+                return this.handleErrors(err);
+            })
         );
     }
 
-    delete(area:Area):Observable<any>{
+    delete(area: Area): Observable<any> {
         let requestUrl = `${this.uesPlayApi}/${area.areaId}`;
 
-        return this.http.delete<any>(
-            requestUrl
-        ).pipe(
-            catchError((err: HttpErrorResponse) => {return this.handleErrors(err)})
+        return this.http.delete<any>(requestUrl).pipe(
+            catchError((err: HttpErrorResponse) => {
+                return this.handleErrors(err);
+            })
         );
     }
 
-    private handleErrors(error: HttpErrorResponse): Observable<never>  {
-        return throwError(()=>error.error);
+    private handleErrors(error: HttpErrorResponse): Observable<never> {
+        return throwError(() => error.error);
     }
-
 }

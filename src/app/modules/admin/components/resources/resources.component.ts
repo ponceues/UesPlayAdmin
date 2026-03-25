@@ -1,7 +1,7 @@
 import { Component, Inject, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { Meta } from '@shared/interfaces/meta';
 import { Filter } from '@shared/interfaces/filter';
 import { MessageService, TooltipOptions } from 'primeng/api';
@@ -21,7 +21,7 @@ import { DatePipe, NgIf } from '@angular/common';
 import { ResourceService } from '@admin/services/resources/resource.service';
 import { Resource } from '@admin/interfaces/resource';
 import { DatatableSkeletonComponent } from '@shared/components/datatable-skeleton/datatable-skeleton.component';
-import { ResourceStatesEnum} from '@admin/enums/resource-states-enum';
+import { ResourceStatesEnum } from '@admin/enums/resource-states-enum';
 import { ResourceType } from '@admin/interfaces/resource-type';
 import { ResourceTypeService } from '@public/services/resource-types/resource-type.service';
 import { Area } from '@admin/interfaces/area';
@@ -102,25 +102,22 @@ export class ResourcesComponent {
     ngOnInit() {
         this.loadComponentData();
         this.buildFilterForm();
-        this.fetchResourceStates();
-
-        this.permissions = this.appStorageService.getPermissions().filter(x=>x.includes('resource'));
+        this.loadAreas();
+        this.permissions = this.appStorageService.getPermissions().filter(x=>x.includes('resources'));
     }
 
     loadComponentData(): void {
         this.loadingPage = true;
+        const filter = new Filter();
+        filter.pageSize = 1000;
 
-        const areaFilter = new Filter();
-        areaFilter.pageSize = 1000;
-        const typeFilter = new Filter();
-        typeFilter.pageSize = 1000;
-
-        this.loadAreas();
         forkJoin({
-            resourceTypes: this.resourceTypeService.fetchByFilter(typeFilter),
-            resources: this.resourceService.fetch(this.filter)
+            resourceTypes: this.resourceTypeService.fetchByFilter(filter),
+            resources: this.resourceService.fetch(this.filter),
+            statesRequest: this.resourceStateService.fetch(filter)
         }).subscribe({
-            next: ({ resourceTypes, resources }) => {
+            next: ({ resourceTypes, resources, statesRequest }) => {
+                this.resourceStates = statesRequest.states;
                 this.resourceTypes = resourceTypes.types;
                 this.resources = resources.resources;
                 this.meta = resources.meta;
@@ -131,19 +128,11 @@ export class ResourcesComponent {
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: 'No se ha logrado cargar la informacion correctamente',
+                    detail: 'Ha ocurrido un error inesperado',
                     key: 'main'
                 });
             }
         });
-    }
-
-    //#region functions
-
-    //#endregion
-
-    loadPermissions():void{
-
     }
 
     clearFilters(): void {
@@ -256,13 +245,10 @@ export class ResourcesComponent {
     private loadAreas():void{
         try {
             let strArea = localStorage.getItem('areas');
-            let areas: Area[] = JSON.parse(strArea!);
-            this.areas = areas;
+            this.areas = JSON.parse(strArea!);
         }catch(error){
             this.areas = [];
         }
-
-
     }
 
     private buildCreateForm(): void {

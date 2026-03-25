@@ -4,7 +4,6 @@ import { environment } from '../../../../../environments/environment';
 import { Filter } from '@shared/interfaces/filter';
 import { Observable, throwError } from 'rxjs';
 import { Envelop } from '@shared/interfaces/envelop';
-import { Device } from '@public/interfaces/device';
 import { catchError } from 'rxjs/operators';
 import { MediaType } from '@public/interfaces/media-type';
 import { MediaGenre } from '@public/interfaces/media-genre';
@@ -14,7 +13,7 @@ import { MediaGenre } from '@public/interfaces/media-genre';
 })
 export class CatalogService {
     private http:HttpClient = inject(HttpClient);
-    private uesPlayApi =`${environment.UesPlayApi}/uesplay/catalogs`;
+    private uesPlayApi =`${environment.UesPlayApi}`;
 
     constructor() { }
 

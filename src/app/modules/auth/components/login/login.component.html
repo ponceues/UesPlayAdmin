@@ -62,7 +62,8 @@
                 <div class="col-12 mt-4">
                     <p-button   (onClick)="loginFn()"
                                 [disabled]="httpLoading || loginForm.invalid"
-                                label="Ingresar"
+                                [label]="httpLoading ? '' : 'Ingresar'"
+                                [loading]="httpLoading"
                                 styleClass="w-full"></p-button>
                 </div>
             </div>
