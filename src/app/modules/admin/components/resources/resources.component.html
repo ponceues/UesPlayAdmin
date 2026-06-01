@@ -67,15 +67,17 @@
                                             variant="outlined" />
                             </form>
 
-                            <div>
-                                <p-button   *ngIf="permissions.includes('can.create.resource')"
-                                            (onClick)="showCreate = !showCreate"
-                                            icon="pi pi-plus"
-                                            pTooltip="Registrar rol"
-                                            [tooltipOptions]="tooltipOption"
-                                            variant="outlined"
-                                            label="Agregar" />
-                            </div>
+                            @if(permissions.includes('can.create.resources')){
+                                <div>
+                                    <p-button   (onClick)="showCreate = !showCreate"
+                                                [tooltipOptions]="tooltipOption"
+                                                icon="pi pi-plus"
+                                                pTooltip="Crear nuevo recurso"
+                                                variant="outlined"
+                                                label="Agregar" />
+                                </div>
+                            }
+
                         </div>
 
 

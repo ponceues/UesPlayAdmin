@@ -64,6 +64,10 @@ export class LoginComponent {
         this.router.navigate(['/']);
     }
 
+    goToResetPw(): void {
+        this.router.navigate(['/auth/reset-password']);
+    }
+
     loadAndSaveUserInfo(): void {
         this.authService.getUserInformation().subscribe({
             next: (res) => {

@@ -59,6 +59,7 @@ export class ResourcesComponent implements OnInit {
     private resourceService: ResourcesService = inject(ResourcesService);
     private catalogService: CatalogService = inject(CatalogService);
 
+
     selectedType?: ResourceType;
     loadingPage:boolean = true;
     resourceTypeEnum= EResourceType;
@@ -151,6 +152,32 @@ export class ResourcesComponent implements OnInit {
         }
         return 'assets/images/no-image.png';
     }
+
+    getStarsArray(rating: number): string[] {
+        const stars: string[] = [];
+        const fullStars = Math.floor(rating);
+        const hasHalfStar = rating % 1 >= 0.5;
+        const totalStars = 5;
+
+        // Add full stars
+        for (let i = 0; i < fullStars; i++) {
+            stars.push('pi pi-star-fill');
+        }
+
+        // Add half star if applicable
+        if (hasHalfStar && fullStars < totalStars) {
+            stars.push('pi pi-star-half-fill');
+        }
+
+        // Add empty stars
+        const emptyStars = totalStars - stars.length;
+        for (let i = 0; i < emptyStars; i++) {
+            stars.push('pi pi-star');
+        }
+
+        return stars;
+    }
+
 
     onMediaTypeChange(event: any):void{
         this.mediaGenres = [];

@@ -12,9 +12,15 @@ import { LicensesComponent } from '@admin/components/licenses/licenses.component
 import { MediaTypesComponent } from '@admin/components/media-types/media-types.component';
 import { MediaGenresComponent } from '@admin/components/media-genres/media-genres.component';
 import { sessionGuard } from '../../guards/session/session.guard';
+import { DashboardComponent } from '@admin/components/dashboard/dashboard.component';
 
 
 const routes: Routes = [
+    {
+        path: '',
+        component: DashboardComponent,
+        canActivate: [sessionGuard]
+    },
     {
         path: 'roles',
         component: RolesComponent,

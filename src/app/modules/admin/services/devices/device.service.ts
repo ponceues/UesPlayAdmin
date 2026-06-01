@@ -7,6 +7,7 @@ import { Envelop } from '@shared/interfaces/envelop';
 import { catchError } from 'rxjs/operators';
 
 import { Device } from '@admin/interfaces/device';
+import { Summary } from '@admin/interfaces/sumary';
 
 @Injectable({
   providedIn: 'root'
@@ -59,6 +60,16 @@ export class DeviceService {
         let requestUrl = `${this.uesPlayApi}/${entity.deviceId}`;
 
         return this.http.delete<any>(
+            `${requestUrl}`
+        ).pipe(
+            catchError((err: HttpErrorResponse) => {return this.handleErrors(err)})
+        );
+    }
+
+    summary():Observable<Summary>{
+        let requestUrl = `${this.uesPlayApi}/summary`;
+
+        return this.http.get<Summary>(
             `${requestUrl}`
         ).pipe(
             catchError((err: HttpErrorResponse) => {return this.handleErrors(err)})

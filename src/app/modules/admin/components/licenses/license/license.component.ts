@@ -85,7 +85,8 @@ export class LicenseComponent {
         });
     }
 
-    delete():void{
+    delete(): void {
+
         this.httpLoading = true;
         this.licenseService.delete(this.selectedLicense).subscribe({
             next: (data: any) => {

@@ -10,7 +10,6 @@ export const tokenJwtInterceptor: HttpInterceptorFn = (req, next) => {
 
     const token = localStorage.getItem('authJwt');
     if(!token) {
-        console.log("token null " + req.url);
         return next(req);
     }
     let jwt = JSON.parse(token);

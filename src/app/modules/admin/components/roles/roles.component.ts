@@ -26,24 +26,7 @@ import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-roles',
-    imports: [
-        TableModule,
-        DatePipe,
-        TagModule,
-        NgIf,
-        DynamicDialogModule,
-        ButtonModule,
-        ChipModule,
-        TooltipModule,
-        InputTextModule,
-        SelectModule,
-        MultiSelectModule,
-        FormsModule,
-        IconField,
-        InputIcon,
-        ReactiveFormsModule,
-        RouterLink
-    ],
+    imports: [TableModule, DatePipe, TagModule, NgIf, DynamicDialogModule, ButtonModule, ChipModule, TooltipModule, InputTextModule, SelectModule, MultiSelectModule, FormsModule, IconField, InputIcon, ReactiveFormsModule, RouterLink],
     templateUrl: './roles.component.html',
     styleUrl: './roles.component.scss',
     providers: [RolesService, DialogService]
@@ -54,7 +37,7 @@ export class RolesComponent implements OnInit {
     ref: DynamicDialogRef | undefined;
     rolStatus: any[] = [];
     roles: Rol[] = [];
-    meta!: Meta;
+    meta: Meta = { count: 0, page: 0, pageSize: 10, key:'roles' };
     rolesFilter!: Filter;
     filterForm!: FormGroup;
     loadingTable: boolean = false;
@@ -69,6 +52,7 @@ export class RolesComponent implements OnInit {
     ) {
         this.rolesFilter = new Filter();
         this.buildFilterForm();
+        this.loadRolStatus();
     }
 
     ngOnInit() {
@@ -213,7 +197,5 @@ export class RolesComponent implements OnInit {
         });
     }
 
-    private loadInitialData(): void {
-
-    }
+    private loadInitialData(): void {}
 }

@@ -1,11 +1,11 @@
 
 <form [formGroup]="areaForm" class="grid formgrid">
     <div class="field col-8 mb-4">
-        <label for="name">Curso</label>
+        <label for="name py-2">Área</label>
         <input type="text"
                formControlName="name"
                class="w-full"
-               placeholder="Nombre del curso"
+               placeholder="Nombre del área"
                [readonly] ="dialogMode === 'delete'"
                pInputText/>
 
@@ -13,7 +13,7 @@
             <p-message  *ngIf="areaForm.hasError('required','name')"
                         severity="error"
                         variant="simple"
-                        size="small">El nombre del curso es requerido</p-message>
+                        size="small">El nombre del área es requerido</p-message>
             <p-message  *ngIf="areaForm.hasError('minlength','name')"
                         severity="error"
                         variant="simple"
@@ -21,7 +21,7 @@
         </div>
     </div>
     <div class="field col-4 mb-4">
-        <label for="code">Codigo</label>
+        <label for="code">Código</label>
             <input type="text"
                    pInputText
                    formControlName="code"
@@ -33,7 +33,7 @@
             <p-message  *ngIf="areaForm.hasError('required','code')"
                         severity="error"
                         variant="simple"
-                        size="small">El codigo es requerido </p-message>
+                        size="small">El código es requerido </p-message>
         </div>
     </div>
     <div class="col-12 field">

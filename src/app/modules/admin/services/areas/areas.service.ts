@@ -7,6 +7,7 @@ import { environment } from '../../../../../environments/environment';
 import { Filter } from '@shared/interfaces/filter';
 import { Envelop } from '@shared/interfaces/envelop';
 import { Area } from '@admin/interfaces/area';
+import { Summary } from '@admin/interfaces/sumary';
 
 @Injectable({
     providedIn: 'root'
@@ -75,6 +76,16 @@ export class AreasService {
         let requestUrl = `${this.uesPlayApi}/${area.areaId}`;
 
         return this.http.delete<any>(requestUrl).pipe(
+            catchError((err: HttpErrorResponse) => {
+                return this.handleErrors(err);
+            })
+        );
+    }
+
+    summary() {
+        let requestUrl = `${this.uesPlayApi}/summary`;
+
+        return this.http.get<Summary>(`${requestUrl}`).pipe(
             catchError((err: HttpErrorResponse) => {
                 return this.handleErrors(err);
             })

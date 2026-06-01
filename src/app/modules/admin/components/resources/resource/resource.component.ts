@@ -224,7 +224,6 @@ export class ResourceComponent {
     }
 
     onSelectResourceFile(event: any): void {
-        console.log(event.files[0] ? '' : '');
         const file = event.files[0];
         this.fileForm.get('file')?.setValue(file);
         let type: string = file.type.startsWith('image/') ? 'image' : 'video';
@@ -281,9 +280,9 @@ export class ResourceComponent {
     }
 
     showFileModalFn(option: string): void {
+
         this.fileForm.reset();
         this.fileForm.get('option')?.setValue(option);
-        this.fileForm.get('file')?.setValue(null);
         this.showFileModal = true;
     }
 
@@ -327,7 +326,7 @@ export class ResourceComponent {
                 this.fetchVersions();
                 this.loadingFiles = true;
                 this.fetchFiles();
-                this.licenses = licensesRes.licenses;
+                this.licenses = licensesRes.licences;
             },
             error: () => {}
         });

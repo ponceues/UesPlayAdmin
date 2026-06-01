@@ -2,7 +2,7 @@
         class="grid bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen overflow-hidden">
     <div class="sm:col-11 md:col-8 lg:col-6 xl:col-4">
         <app-configurator />
-        <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20 shadow-1" style="border-radius: 12px">
+        <div class="w-full bg-surface-0 dark:bg-surface-900 py-15 px-4 sm:px-20 shadow-1" style="border-radius: 12px">
             <div class="grid">
                 <div class="col-12 flex justify-content-center">
                     <img src="svg/minerva.svg" height="350">
@@ -11,7 +11,7 @@
                     <h2>Ingresar al sistema</h2>
                 </div>
             </div>
-            <form [formGroup]="loginForm" class="grid formgrid" >
+            <form [formGroup]="loginForm" class="grid formgrid">
                 <div class="col-12 field mb-4">
                     <label for="email" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
                     <input pInputText
@@ -55,11 +55,12 @@
                     <span   (click)="goToStart()"
                             class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Regresar
                     </span>
-                    <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">¿Has olvidado tu contraseña?</span>
+                    <span   (click)="goToResetPw()"
+                            class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">¿Has olvidado tu contraseña?</span>
                 </div>
             </form>
             <div class="grid">
-                <div class="col-12 mt-4">
+                <div class="col-12 my-4">
                     <p-button   (onClick)="loginFn()"
                                 [disabled]="httpLoading || loginForm.invalid"
                                 [label]="httpLoading ? '' : 'Ingresar'"

@@ -23,7 +23,16 @@ import {
     MessageSquare,
     BadgeCheck,
     Settings,
-    LogIn
+    LogIn,
+    Cog,
+    ShoppingCart,
+    Users,
+    Package,
+    LayoutGrid,
+    Folder,
+    Cpu,
+    Monitor,
+    Tags
 } from 'lucide-angular';
 
 const icons = {
@@ -43,7 +52,16 @@ const icons = {
     MessageSquare,
     BadgeCheck,
     Settings,
-    LogIn
+    LogIn,
+    Cog,
+    ShoppingCart,
+    Users,
+    Package,
+    LayoutGrid,
+    Folder,
+    Cpu,
+    Monitor,
+    Tags
 };
 
 @NgModule({

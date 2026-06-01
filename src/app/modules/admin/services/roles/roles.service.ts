@@ -10,6 +10,7 @@ import { Permission} from '../../interfaces/permission';
 import { Filter } from '@shared/interfaces/filter';
 import { Envelop } from '@shared/interfaces/envelop';
 import { Result } from  '@shared/interfaces/result';
+import { Summary } from '@admin/interfaces/sumary';
 
 @Injectable({
   providedIn: 'root'
@@ -113,7 +114,15 @@ export class RolesService {
             catchError((err: HttpErrorResponse) => {return this.handleErrors(err)})
         );
     }
+    summary() {
+        let requestUrl = `${this.uesPlayApi}/summary`;
 
+        return this.http.get<Summary>(`${requestUrl}`).pipe(
+            catchError((err: HttpErrorResponse) => {
+                return this.handleErrors(err);
+            })
+        );
+    }
 
 
     private handleErrors(error: HttpErrorResponse): Observable<never>  {

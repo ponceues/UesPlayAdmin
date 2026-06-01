@@ -11,6 +11,8 @@ import { License } from '@admin/interfaces/license';
 import { Platform } from '@admin/interfaces/platform';
 import { Device } from '@admin/interfaces/device';
 import { Language } from '@admin/interfaces/language';
+import { Rol } from '@admin/interfaces/rol';
+import { UserState } from '@admin/interfaces/user-state';
 
 @Injectable({
     providedIn: 'root'
@@ -20,7 +22,7 @@ export class CommonsService {
     private uesPlayApi = `${environment.UesPlayApi}/admin`;
 
     listAreas(filter: Filter): Observable<Envelop<Area>> {
-        let requestUrl = `${this.uesPlayApi}/areas?page=${filter.page}&pageSize=${filter.pageSize}`;
+        let requestUrl = `${this.uesPlayApi}/available-areas?page=${filter.page}&pageSize=${filter.pageSize}`;
 
         if (filter.text !== null) {
             requestUrl = `${requestUrl}&text=${filter.text}`;
@@ -31,6 +33,24 @@ export class CommonsService {
         }
 
         return this.http.get<Envelop<Area>>(`${requestUrl}`).pipe(
+            catchError((err: HttpErrorResponse) => {
+                return this.handleErrors(err);
+            })
+        );
+    }
+
+    listRoles(filter: Filter): Observable<Envelop<Rol>> {
+        let requestUrl = `${this.uesPlayApi}/available-roles?page=${filter.page}&pageSize=${filter.pageSize}`;
+
+        if (filter.text !== null) {
+            requestUrl = `${requestUrl}&text=${filter.text}`;
+        }
+
+        if (filter.state !== null) {
+            requestUrl = `${requestUrl}&available=${filter.state}`;
+        }
+
+        return this.http.get<Envelop<Rol>>(`${requestUrl}`).pipe(
             catchError((err: HttpErrorResponse) => {
                 return this.handleErrors(err);
             })
@@ -103,6 +123,23 @@ export class CommonsService {
         }
 
         return this.http.get<Envelop<Language>>(`${requestUrl}`).pipe(
+            catchError((err: HttpErrorResponse) => {
+                return this.handleErrors(err);
+            })
+        );
+    }
+    listUsersStates(filter: Filter): Observable<Envelop<UserState>> {
+        let requestUrl = `${this.uesPlayApi}/available-userstates?page=${filter.page}&pageSize=${filter.pageSize}`;
+
+        if (filter.text !== null) {
+            requestUrl = `${requestUrl}&text=${filter.text}`;
+        }
+
+        if (filter.state !== null) {
+            requestUrl = `${requestUrl}&available=${filter.state}`;
+        }
+
+        return this.http.get<Envelop<UserState>>(`${requestUrl}`).pipe(
             catchError((err: HttpErrorResponse) => {
                 return this.handleErrors(err);
             })
