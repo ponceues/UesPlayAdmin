@@ -12,6 +12,12 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
             let message = error.error.message;;
             let title = '';
             let severity: 'error' | 'warn' | 'info';
+            let shouldShowToast = true;
+
+            // No mostrar toast para errores 403 en la ruta de login
+            if (error.error.code === 403 && req.url.includes('/auth/login')) {
+                shouldShowToast = false;
+            }
 
             switch (error.error.code) {
                 case 400:
@@ -35,12 +41,14 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
                     break;
             }
 
-            messageService.add({
-                severity: severity,
-                summary: title,
-                detail: message,
-                key:'main'
-            });
+            if (shouldShowToast) {
+                messageService.add({
+                    severity: severity,
+                    summary: title,
+                    detail: message,
+                    key:'main'
+                });
+            }
 
             return throwError(() => error);
 

@@ -56,7 +56,7 @@ export class DashboardComponent implements OnInit {
                 permission: 'can.search.users',
                 key: 'users',
                 service: () => this.userService.summary(),
-                entity: 'Users',
+                entity: 'Usuarios',
                 icon: 'users',
                 color: 'text-blue-500'
             },

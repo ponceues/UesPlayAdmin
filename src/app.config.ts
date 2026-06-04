@@ -9,6 +9,7 @@ import {  TooltipOptions } from 'primeng/api';
 import { MessageService } from 'primeng/api';
 import { httpErrorInterceptor } from './app/interceptors/http-error/http-error.interceptor';
 import { tokenJwtInterceptor } from './app/interceptors/token-twt/token-jwt.interceptor';
+import { tokenRefreshInterceptor } from './app/interceptors/token-refresh/token-refresh.interceptor';
 import { definePreset } from '@primeng/themes';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
@@ -27,7 +28,7 @@ export const appConfig: ApplicationConfig = {
         provideRouter(appRoutes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }), withEnabledBlockingInitialNavigation()),
         provideHttpClient(
             withFetch(),
-            withInterceptors([httpErrorInterceptor,tokenJwtInterceptor])
+            withInterceptors([tokenJwtInterceptor, tokenRefreshInterceptor, httpErrorInterceptor])
         ),
         provideAnimationsAsync(),
         providePrimeNG({
