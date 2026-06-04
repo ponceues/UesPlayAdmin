@@ -4,6 +4,7 @@
             <p>Descarga la plantilla para cargar masivamente usuarios </p>
             <p-button   (onClick)="dowloadTemaplate()"
                         [tooltipOptions]="tooltipOption"
+                        [disabled]="downloadingTemplate"
                         icon="pi pi-download"
                         pTooltip="Descargar plantilla"
                         severity="danger"

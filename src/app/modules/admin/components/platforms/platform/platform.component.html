@@ -85,9 +85,10 @@
             &nbsp;&nbsp;
             <p-button   *ngIf="dialogMode === 'create'"
                         (onClick)="create()"
-                        [disabled]="entityForm.invalid"
+                        [disabled]="entityForm.invalid || httpLoading"
                         [tooltipOptions]="tooltipOption || httpLoading"
                         [tooltipDisabled]="entityForm.invalid || httpLoading"
+
                         icon="pi pi-save"
                         pTooltip="Guardar"
                         severity="success"
@@ -95,7 +96,7 @@
                         label="Guardar" />
             <p-button   *ngIf="dialogMode === 'update'"
                         (onClick)="update()"
-                        [disabled]="entityForm.invalid"
+                        [disabled]="entityForm.invalid || httpLoading"
                         [tooltipOptions]="tooltipOption || httpLoading"
                         [tooltipDisabled]="entityForm.invalid || httpLoading"
                         icon="pi pi-save"
@@ -105,6 +106,7 @@
                         label="Actualizar" />
             <p-button   *ngIf="dialogMode === 'delete'"
                         (onClick)="delete()"
+                        [disabled]="entityForm.invalid || httpLoading"
                         [tooltipOptions]="tooltipOption || httpLoading"
                         [tooltipDisabled]="entityForm.invalid || httpLoading"
                         icon="pi pi-trash"

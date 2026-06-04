@@ -58,10 +58,10 @@
                             </form>
 
                             <div>
-                                <p-button   *ngIf="permissions.includes('can.create.area')"
+                                <p-button   *ngIf="permissions.includes('can.search.licenses')"
                                             (onClick)="showCreateEntity()"
                                             icon="pi pi-plus"
-                                            pTooltip="Registrar usuario"
+                                            pTooltip="Registrar licencia"
                                             [tooltipOptions]="tooltipOption"
                                             variant="outlined"
                                             severity="secondary"
@@ -91,14 +91,17 @@
                             </td>
 
                             <td>
-                                <p-tag *ngIf="entity.active" severity="success" icon="pi pi-check" value="Activo" />
-                                <p-tag *ngIf="!entity.active" severity="danger" icon="pi pi-times" value="Inactivo" />
+                                <p-tag *ngIf="entity.enabled" severity="success" icon="pi pi-check" value="Activo" />
+                                <p-tag *ngIf="!entity.enabled" severity="danger" icon="pi pi-times" value="Inactivo" />
+                            </td>
+                            <td>
+                                {{ entity.createdAt | date:'dd/MM/yyyy':'UTC-6' }}
                             </td>
                             <td>
                                 {{ entity.updatedAt | date:'dd/MM/yyyy':'UTC-6' }}
                             </td>
                             <td class="text-center">
-                                <p-button   *ngIf="permissions.includes('can.update.area')"
+                                <p-button   *ngIf="permissions.includes('can.update.licenses')"
                                             [disabled]="entity.isDefault"
                                             (onClick)="showUpdateEntity(entity)"
                                             [rounded]="true"
@@ -106,16 +109,16 @@
                                             [tooltipOptions]="tooltipOption"
                                             icon="pi pi-pencil"
                                             severity="secondary"
-                                            pTooltip="Actualizar curso"/>
+                                            pTooltip="Actualizar licencia"/>
                                 &nbsp;
-                                <p-button   *ngIf="permissions.includes('can.delete.area')"
+                                <p-button   *ngIf="permissions.includes('can.delete.licenses')"
                                             (onClick)="showDelete(entity)"
                                             [rounded]="true"
                                             [outlined]="true"
                                             [tooltipOptions]="tooltipOption"
                                             icon="pi pi-trash"
                                             severity="danger"
-                                            pTooltip="Eliminar curso"/>
+                                            pTooltip="Eliminar licencia"/>
                             </td>
                         </tr>
                     </ng-template>

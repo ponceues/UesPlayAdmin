@@ -59,7 +59,7 @@
                             </form>
 
                             <div>
-                                <p-button   *ngIf="permissions.includes('can.create.area')"
+                                <p-button   *ngIf="permissions.includes('can.create.mediatypes')"
                                             (onClick)="showCreateEntity()"
                                             icon="pi pi-plus"
                                             pTooltip="Registrar usuario"
@@ -103,7 +103,7 @@
                                 {{ entity.updatedAt | date:'dd/MM/yyyy':'UTC-6' }}
                             </td>
                             <td class="text-center">
-                                <p-button   *ngIf="permissions.includes('can.update.area')"
+                                <p-button   *ngIf="permissions.includes('can.update.mediatypes')"
                                             [disabled]="entity.isDefault"
                                             (onClick)="showUpdateEntity(entity)"
                                             [rounded]="true"
@@ -113,7 +113,7 @@
                                             severity="secondary"
                                             pTooltip="Actualizar tipo"/>
                                 &nbsp;
-                                <p-button   *ngIf="permissions.includes('can.update.area')"
+                                <p-button   *ngIf="permissions.includes('can.update.mediatypes')"
                                             [disabled]="entity.isDefault"
                                             (onClick)="manageEntityEvt(entity)"
                                             [rounded]="true"
@@ -123,7 +123,7 @@
                                             severity="info"
                                             pTooltip="Generos de multimedia"/>
                                 &nbsp;
-                                <p-button   *ngIf="permissions.includes('can.delete.area')"
+                                <p-button   *ngIf="permissions.includes('can.delete.mediatypes')"
                                             (onClick)="showDelete(entity)"
                                             [rounded]="true"
                                             [outlined]="true"

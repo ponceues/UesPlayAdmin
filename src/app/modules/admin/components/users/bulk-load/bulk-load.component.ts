@@ -17,6 +17,7 @@ import { Tooltip } from 'primeng/tooltip';
 import { FileUploadModule } from 'primeng/fileupload';
 import { UsersService } from '@admin/services/users/users.service';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { CommonsService } from '@admin/services/commons/commons.service';
 
 @Component({
   selector: 'app-bulk-load',
@@ -39,11 +40,13 @@ export class BulkLoadComponent {
     private userService:UsersService = inject(UsersService);
     private formBuilder: FormBuilder = inject(FormBuilder);
     private dialogRef = inject(DynamicDialogRef);
+    private commonsService:CommonsService = inject(CommonsService);
 
     roles:Rol[]=[];
     areas:Area[]=[];
     bulkForm!: FormGroup;
     httpLoading:boolean = false;
+    downloadingTemplate:boolean = false;
 
     constructor(@Inject('DefaultTooltipOptions') public tooltipOption: TooltipOptions) {}
 
@@ -76,6 +79,7 @@ export class BulkLoadComponent {
     }
 
     dowloadTemaplate():void{
+        this.downloadingTemplate = true;
         this.userService.downloadTemplate().subscribe({
             next: blob => {
                 const a = document.createElement('a');
@@ -84,6 +88,7 @@ export class BulkLoadComponent {
                 a.download = 'PlantillaUsusarios.xlsx';
                 a.click();
                 URL.revokeObjectURL(objectUrl);
+                this.downloadingTemplate = false;
             },
             error: err => {
                 console.log(err);
@@ -104,8 +109,8 @@ export class BulkLoadComponent {
         const filter: Filter = new Filter();
         filter.pageSize = 1000;
 
-        const rolRequest:Observable<Envelop<Rol>> = this.rolService.fetch(filter) ;
-        const areaRequest: Observable<Envelop<Area>> = this.areaService.fetch(filter);
+        const rolRequest:Observable<Envelop<Rol>> = this.commonsService.listRoles(filter) ;
+        const areaRequest: Observable<Envelop<Area>> = this.commonsService.listAreas(filter);
         forkJoin([rolRequest, areaRequest]).subscribe({
             next: ([rolResult, areaResult]) => {
                 this.areas = areaResult.areas;

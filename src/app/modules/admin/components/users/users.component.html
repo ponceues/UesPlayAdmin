@@ -60,6 +60,7 @@
                             <div>
                                 <p-button   (onClick)="showBulkUpload()"
                                             [tooltipOptions]="tooltipOption"
+                                            *ngIf="permissions.includes('can.upload.users')"
                                             icon="pi pi-upload"
                                             pTooltip="Cargar masivamente"
                                             variant="outlined"
@@ -68,7 +69,9 @@
                                 &nbsp;
                                 <p-button   (onClick)="showCreateEntity()"
                                             [tooltipOptions]="tooltipOption"
+                                            *ngIf="permissions.includes('can.create.users')"
                                             icon="pi pi-user-plus"
+
                                             pTooltip="Registrar usuario"
                                             variant="outlined"
                                             severity="secondary"
@@ -113,6 +116,7 @@
                                           [outlined]="true"
                                           [tooltipOptions]="tooltipOption"
                                           [tooltipDisabled]="entity.isDefault"
+                                          *ngIf="permissions.includes('can.update.users')"
                                           icon="pi pi-pencil"
                                           severity="secondary"
                                           pTooltip="Actualizar usuario"/>

@@ -74,7 +74,7 @@ export class LicensesComponent {
 
     ngOnInit() {
         this.loadInitialData();
-        this.permissions = this.appStorageService.getPermissions().filter(x=>x.includes('area'));
+        this.permissions = this.appStorageService.getPermissions().filter((x) => x.includes('licenses'));
         this.buildEntitiesFilterForm();
     }
 

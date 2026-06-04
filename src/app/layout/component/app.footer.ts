@@ -4,7 +4,9 @@ import { Component } from '@angular/core';
     standalone: true,
     selector: 'app-footer',
     template: `<div class="layout-footer">
-        © 2025 Universidad de El Salvador
+        © {{ currentYear }} Universidad de El Salvador
     </div>`
 })
-export class AppFooter {}
+export class AppFooter {
+    currentYear = new Date().getFullYear();
+}

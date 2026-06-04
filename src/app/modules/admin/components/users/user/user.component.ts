@@ -24,6 +24,7 @@ import { User } from '@admin/interfaces/user';
 import { AppStorageService } from '@shared/services/app-storage/app-storage.service';
 import { AreasService } from '@admin/services/areas/areas.service';
 import { MultiSelect } from 'primeng/multiselect';
+import { CommonsService } from '@admin/services/commons/commons.service';
 
 
 @Component({
@@ -37,10 +38,8 @@ export class UserComponent {
     private dialogRef = inject(DynamicDialogRef);
     private dialogConfig = inject(DynamicDialogConfig);
     private userService: UsersService = inject(UsersService);
-    private rolService: RolesService = inject(RolesService);
-    private userStateService: UserStateService = inject(UserStateService);
     private appStorageService: AppStorageService = inject(AppStorageService);
-    private areasService = inject(AreasService);
+    private commonsService = inject(CommonsService);
 
     httpLoading: boolean = false;
     selectedUser!: User;
@@ -126,7 +125,7 @@ export class UserComponent {
         let filter = new Filter();
         filter.pageSize = 1000;
         filter.available = true;
-        this.areasService.fetch(filter).subscribe({
+        this.commonsService.listAreas(filter).subscribe({
             next: (data: any) => {
                 this.areas = data.areas;
             },
@@ -140,8 +139,8 @@ export class UserComponent {
         const filter: Filter = new Filter();
         filter.pageSize = 1000;
 
-        const rolRequest = this.rolService.fetch(filter);
-        const userStateRequest = this.userStateService.fetch(filter);
+        const rolRequest = this.commonsService.listRoles(filter);
+        const userStateRequest = this.commonsService.listUsersStates(filter);
 
         forkJoin([rolRequest, userStateRequest]).subscribe({
             next: ([rolResult, statesResult]) => {

@@ -7,66 +7,75 @@ import { environment } from '../../../../../environments/environment';
 import { Filter } from '@shared/interfaces/filter';
 import { Envelop } from '@shared/interfaces/envelop';
 import {License } from '@admin/interfaces/license';
+import { Summary } from '@admin/interfaces/sumary';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class LicensesService {
-    private uesPlayApi =`${environment.UesPlayApi}/admin/licenses`;
+    private uesPlayApi = `${environment.UesPlayApi}/admin/licenses`;
 
-    constructor(private http:HttpClient) { }
+    constructor(private http: HttpClient) {}
 
-    fetch(filter:Filter):Observable<Envelop<License>>{
+    fetch(filter: Filter): Observable<Envelop<License>> {
         let requestUrl = `${this.uesPlayApi}?page=${filter.page}&pageSize=${filter.pageSize}`;
 
-        if(filter.text !== null){
+        if (filter.text !== null) {
             requestUrl = `${requestUrl}&text=${filter.text}`;
         }
 
-        if(filter.state !== null){
+        if (filter.state !== null) {
             requestUrl = `${requestUrl}&enabled=${filter.enabled}`;
         }
 
-        return this.http.get<Envelop<License>>(
-            `${requestUrl}`
-        ).pipe(
-            catchError((err: HttpErrorResponse) => {return this.handleErrors(err)})
+        return this.http.get<Envelop<License>>(`${requestUrl}`).pipe(
+            catchError((err: HttpErrorResponse) => {
+                return this.handleErrors(err);
+            })
         );
     }
 
-    create(request:any):Observable<License>{
+    create(request: any): Observable<License> {
         let requestUrl = `${this.uesPlayApi}`;
 
-        return this.http.post<License>(
-            requestUrl,
-            request
-        ).pipe(
-            catchError((err: HttpErrorResponse) => {return this.handleErrors(err)})
+        return this.http.post<License>(requestUrl, request).pipe(
+            catchError((err: HttpErrorResponse) => {
+                return this.handleErrors(err);
+            })
         );
     }
 
-    update(license:License):Observable<License>{
+    update(license: License): Observable<License> {
         let requestUrl = `${this.uesPlayApi}/${license.licenceId}`;
 
-        return this.http.post<License>(
-            requestUrl,
-            license
-        ).pipe(
-            catchError((err: HttpErrorResponse) => {return this.handleErrors(err)})
+        return this.http.post<License>(requestUrl, license).pipe(
+            catchError((err: HttpErrorResponse) => {
+                return this.handleErrors(err);
+            })
         );
     }
 
-    delete(license:License):Observable<any>{
-        let requestUrl = `${this.uesPlayApi}/${license.licenceId}`;
+    delete(license: License): Observable<any> {
+        let requestUrl = `${this.uesPlayApi}/${license.licenseId}`;
 
-        return this.http.delete<any>(
-            requestUrl
-        ).pipe(
-            catchError((err: HttpErrorResponse) => {return this.handleErrors(err)})
+        return this.http.delete<any>(requestUrl).pipe(
+            catchError((err: HttpErrorResponse) => {
+                return this.handleErrors(err);
+            })
         );
     }
 
-    private handleErrors(error: HttpErrorResponse): Observable<never>  {
-        return throwError(()=>error.error);
+    summary(): Observable<Summary> {
+        let requestUrl = `${this.uesPlayApi}/summary`;
+
+        return this.http.get<Summary>(`${requestUrl}`).pipe(
+            catchError((err: HttpErrorResponse) => {
+                return this.handleErrors(err);
+            })
+        );
+    }
+
+    private handleErrors(error: HttpErrorResponse): Observable<never> {
+        return throwError(() => error.error);
     }
 }

@@ -67,15 +67,17 @@
                                             variant="outlined" />
                             </form>
 
-                            <div>
-                                <p-button   *ngIf="permissions.includes('can.create.resource')"
-                                            (onClick)="showCreate = !showCreate"
-                                            icon="pi pi-plus"
-                                            pTooltip="Registrar rol"
-                                            [tooltipOptions]="tooltipOption"
-                                            variant="outlined"
-                                            label="Agregar" />
-                            </div>
+                            @if(permissions.includes('can.create.resources')){
+                                <div>
+                                    <p-button   (onClick)="showCreate = !showCreate"
+                                                [tooltipOptions]="tooltipOption"
+                                                icon="pi pi-plus"
+                                                pTooltip="Crear nuevo recurso"
+                                                variant="outlined"
+                                                label="Agregar" />
+                                </div>
+                            }
+
                         </div>
 
 
@@ -157,7 +159,7 @@
                                 </p-tag>
                             </td>
                             <td>
-                                <p-chip label="{{entity.area.code}}" icon="pi pi-sitemap" />
+                                <p-chip label="{{entity.area.code }}" icon="pi pi-sitemap" />
                             </td>
                             <td>
                             <p-tag [style]="{ border: '2px solid var(--p-sky-100)', background: 'var(--p-sky-100)', color: 'var(--p-sky-700)'}">
@@ -175,7 +177,7 @@
                                 {{ entity.createdAt | date:'dd/MM/yyyy':'UTC-6' }}
                             </td>
                             <td>
-                                <p-button   *ngIf="permissions.includes('can.update.resource')"
+                                <p-button   *ngIf="permissions.includes('can.update.resources')"
                                             (onClick)="manageResource(entity)"
                                             [rounded]="true"
                                             [outlined]="true"
@@ -184,7 +186,7 @@
                                             severity="secondary"
                                             pTooltip="Editar recurso"/>
                                 &nbsp;
-                                <p-button   *ngIf="permissions.includes('can.manage.resource')"
+                                <p-button   *ngIf="permissions.includes('can.manage.resources')"
                                             (onClick)="showUpdateState(entity)"
                                             [rounded]="true"
                                             [outlined]="true"
@@ -193,7 +195,7 @@
                                             pTooltip="Validar estado"
                                             severity="secondary"/>
                                 &nbsp;
-                                <p-button   *ngIf="permissions.includes('can.preview.resource') && (entity.state.code === resourceStatesEnum.Published || entity.state.code === resourceStatesEnum.Pending)"
+                                <p-button   *ngIf="permissions.includes('can.preview.resources') && (entity.state.code === resourceStatesEnum.Published || entity.state.code === resourceStatesEnum.Pending)"
                                             [rounded]="true"
                                             [outlined]="true"
                                             (onClick)="previewResource(entity)"

@@ -24,9 +24,6 @@ import { AuthorService } from '@admin/services/authors/author.service';
 import { Dialog } from 'primeng/dialog';
 import { Version } from '@admin/interfaces/version';
 import { VersionService } from '@admin/services/versions/version.service';
-import { DeviceService } from '@admin/services/devices/device.service';
-import { PlatformService } from '@admin/services/platforms/platform.service';
-import { LanguageService } from '@admin/services/languages/language.service';
 import { Language } from '@admin/interfaces/language';
 import { Platform } from '@admin/interfaces/platform';
 import { Device } from '@admin/interfaces/device';
@@ -42,8 +39,9 @@ import { ResourceStatesEnum } from '@admin/enums/resource-states-enum';
 import { ResourceState } from '@admin/interfaces/resource-state';
 import { FileComponent } from '@admin/components/resources/file/file.component';
 import { LucideAngularModule } from 'lucide-angular';
-import { LicensesService} from '@admin/services/licenses/licences.service';
 import { License } from '@admin/interfaces/license';
+import { CommonsService } from '@admin/services/commons/commons.service';
+import { AppStorageService } from '@shared/services/app-storage/app-storage.service';
 
 
 @Component({
@@ -54,22 +52,19 @@ import { License } from '@admin/interfaces/license';
 })
 export class ResourceComponent {
     private formBuilder = inject(FormBuilder);
-    private areaService: AreasService = inject(AreasService);
     private resourceTypeService: ResourceTypeService = inject(ResourceTypeService);
     private resourceService: ResourceService = inject(ResourceService);
     private route: ActivatedRoute = inject(ActivatedRoute);
     private messageService: MessageService = inject(MessageService);
     private authorService: AuthorService = inject(AuthorService);
     private versionService: VersionService = inject(VersionService);
-    private deviceService: DeviceService = inject(DeviceService);
-    private platformService: PlatformService = inject(PlatformService);
-    private languageService: LanguageService = inject(LanguageService);
     private resourceFileService: ResourceFileService = inject(ResourceFileService);
     private resourceStateService: ResourceStateService = inject(ResourceStateService);
-    private licenseService: LicensesService = inject(LicensesService);
+    private commonService: CommonsService = inject(CommonsService);
+    private appStorageService: AppStorageService = inject(AppStorageService);
 
     @ViewChild('resourceFileUpload') resourceFileUpload!: FileUpload;
-
+    permissions: string[] = [];
     selectedResource!: Resource;
     resourceForm!: FormGroup;
     areas: Area[] = [];
@@ -78,7 +73,7 @@ export class ResourceComponent {
     httpLoading: boolean = false;
     loadingPage: boolean = true;
     loadingAuthors: boolean = true;
-    licenses:License[] =[];
+    licenses: License[] = [];
 
     authors: Author[] = [];
     authorForm!: FormGroup;
@@ -93,8 +88,8 @@ export class ResourceComponent {
     showVersionModal: boolean = false;
 
     resourceFiles: ResourceFile[] = [];
-    avatar:ResourceFile | null = null;
-    banner:ResourceFile | null = null;
+    avatar: ResourceFile | null = null;
+    banner: ResourceFile | null = null;
     showFileModal: boolean = false;
     loadingFiles: boolean = true;
     fileForm!: FormGroup;
@@ -108,6 +103,7 @@ export class ResourceComponent {
             this.loadComponentData(resourceId);
             this.buildAuthorForm();
         }
+        this.permissions = this.appStorageService.getPermissions().filter((x) => x.includes('resources'));
     }
 
     updateResource(): void {
@@ -228,10 +224,9 @@ export class ResourceComponent {
     }
 
     onSelectResourceFile(event: any): void {
-        console.log(event.files[0] ? '':'');
         const file = event.files[0];
         this.fileForm.get('file')?.setValue(file);
-        let type:string = file.type.startsWith('image/') ? 'image':'video';
+        let type: string = file.type.startsWith('image/') ? 'image' : 'video';
         this.fileForm.get('type')?.setValue(type);
     }
 
@@ -284,10 +279,10 @@ export class ResourceComponent {
         });
     }
 
-    showFileModalFn(option:string):void{
+    showFileModalFn(option: string): void {
+
         this.fileForm.reset();
         this.fileForm.get('option')?.setValue(option);
-        this.fileForm.get('file')?.setValue(null);
         this.showFileModal = true;
     }
 
@@ -297,7 +292,6 @@ export class ResourceComponent {
                 const url = window.URL.createObjectURL(res);
                 const a = document.createElement('a');
                 a.href = url;
-
 
                 a.download = `${this.selectedResource.title}-v${entity.version}.zip`;
                 document.body.appendChild(a);
@@ -315,11 +309,11 @@ export class ResourceComponent {
         quickFilter.pageSize = 1000;
 
         forkJoin({
-            areas: this.areaService.fetch(quickFilter),
+            areas: this.commonService.listAreas(quickFilter),
             resourceTypes: this.resourceTypeService.fetchByFilter(quickFilter),
             resource: this.resourceService.find(resourceId),
             resourceStates: this.resourceStateService.fetch(quickFilter),
-            licensesRes: this.licenseService.fetch(quickFilter)
+            licensesRes: this.commonService.listLicences(quickFilter)
         }).subscribe({
             next: ({ areas, resourceTypes, resource, resourceStates, licensesRes }) => {
                 this.areas = areas.areas;
@@ -332,15 +326,15 @@ export class ResourceComponent {
                 this.fetchVersions();
                 this.loadingFiles = true;
                 this.fetchFiles();
-                this.licenses = licensesRes.licenses;
+                this.licenses = licensesRes.licences;
             },
             error: () => {}
         });
 
         forkJoin({
-            platforms: this.platformService.fetch(quickFilter),
-            devices: this.deviceService.fetch(quickFilter),
-            languages: this.languageService.fetch(quickFilter)
+            platforms: this.commonService.listPlatforms(quickFilter),
+            devices: this.commonService.listDevices(quickFilter),
+            languages: this.commonService.listLanguages(quickFilter)
         }).subscribe({
             next: ({ devices, platforms, languages }) => {
                 this.devices = devices.devices;
@@ -384,8 +378,8 @@ export class ResourceComponent {
             next: (res) => {
                 this.resourceFiles = res.files;
                 this.loadingFiles = false;
-                this.avatar = this.resourceFiles.filter(x=>x.option === 'avatar')[0] || null;
-                this.banner = this.resourceFiles.filter(x=>x.option === 'banner')[0] || null;
+                this.avatar = this.resourceFiles.filter((x) => x.option === 'avatar')[0] || null;
+                this.banner = this.resourceFiles.filter((x) => x.option === 'banner')[0] || null;
                 this.buildFileForm();
             }
         });

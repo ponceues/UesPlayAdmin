@@ -48,13 +48,13 @@
                     <h3>Juegos favoritos</h3>
 
                 </div>
-                <div class="col-12" *ngIf="selectedType?.code === resourceTypeEnum.Application">
+                <div class="col-12 " *ngIf="selectedType?.code === resourceTypeEnum.Application">
                     <h3>Aplicationes mas descargadas</h3>
                 </div>
             </div>
 
             <div class="grid">
-                <div class="sm:col-12 md:col-6 lg:col-4" *ngFor="let resource of resources">
+                <div class="col-12 md:col-6 lg:col-4" *ngFor="let resource of resources">
                     <div    (click)="goToResourceDetail(resource)"
                             pRipple
                             style="--p-ripple-background:  rgba(139,14,19,0.5);"
@@ -75,13 +75,17 @@
                                     <div class="col">
                                         <div class="grid">
                                             <div class="col-12 pl-3 pb-1">
-                                                {{resource.title}}
+                                                <b style="color: var(--p-primary-color); font-size: 1rem;"> {{resource.title}}</b>
+
                                             </div>
                                             <div class="col-12  pl-3 pb-1">
                                                 <span class="flex align-content-center" style="text-align: center;">
-                                                    <b class="mr-2"> {{resource.rating}} </b>
-                                                    <p-rating [stars]="1"
-                                                              [disabled]="true" />
+                                                    <b class="mr-2"> {{resource.rating.toFixed(1)}} </b>
+                                                    <span class="flex">
+                                                        <i *ngFor="let star of getStarsArray(resource.rating)"
+                                                           [class]="star"
+                                                           style="color: var(--p-primary-color); font-size: 1rem;"></i>
+                                                    </span>
                                                 </span>
                                             </div>
                                         </div>

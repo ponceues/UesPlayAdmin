@@ -24,52 +24,37 @@ import { Tag } from 'primeng/tag';
 import { AppStorageService} from '@shared/services/app-storage/app-storage.service';
 
 @Component({
-      selector: 'app-subjects',
-      imports: [
-          Button,
-          DatatableSkeletonComponent,
-          DatePipe,
-          IconField,
-          InputIcon,
-          InputText,
-          NgIf,
-          ReactiveFormsModule,
-          Select,
-          TableModule,
-          Tooltip,
-          ToggleButtonModule,
-          Tag
-      ],
+    selector: 'app-subjects',
+    imports: [Button, DatatableSkeletonComponent, DatePipe, IconField, InputIcon, InputText, NgIf, ReactiveFormsModule, Select, TableModule, Tooltip, ToggleButtonModule, Tag],
     templateUrl: './subjects.component.html',
     styleUrl: './subjects.component.scss',
-    providers: [DialogService],
+    providers: [DialogService]
 })
-
 export class SubjectsComponent {
     private dialogService: DialogService = inject(DialogService);
     private formBuilder: FormBuilder = inject(FormBuilder);
     private messageService: MessageService = inject(MessageService);
-    private areaService:AreasService = inject(AreasService);
+    private areaService: AreasService = inject(AreasService);
     private appStorageService: AppStorageService = inject(AppStorageService);
 
     ref!: DynamicDialogRef;
-    permissions: string[] =[];
+    permissions: string[] = [];
     loadingPage: boolean = true;
 
     meta!: Meta;
     areas: Area[] = [];
     loadingEntities: boolean = false;
     entitiesFilter: Filter = new Filter();
-    filteredEntities:boolean = false;
+    filteredEntities: boolean = false;
     entitiesFilterForm!: FormGroup;
-    activeOptions:any=[
+    activeOptions: any = [
         {
-            name:"Activo",
-            value:true,
+            name: 'Activo',
+            value: true
         },
         {
-            name:"Inactivo",
-            value:false,
+            name: 'Inactivo',
+            value: false
         }
     ];
 
@@ -77,7 +62,7 @@ export class SubjectsComponent {
 
     ngOnInit() {
         this.loadInitialData();
-        this.permissions = this.appStorageService.getPermissions().filter(x=>x.includes('area'));
+        this.permissions = this.appStorageService.getPermissions().filter((x) => x.includes('area'));
         this.buildEntitiesFilterForm();
     }
 
@@ -95,17 +80,17 @@ export class SubjectsComponent {
 
     showCreateEntity(): void {
         this.ref = this.dialogService.open(SubjectComponent, {
-            header: 'Nuevo curso',
+            header: 'Nueva área',
             data: {
                 mode: 'create',
                 entity: null
             },
-            breakpoints:{
+            breakpoints: {
                 '1200px': '30vw',
                 '900px': '60vw',
                 '600px': '90vw'
             },
-            width:'30vw',
+            width: '30vw',
             modal: true,
             closable: true
         });
@@ -115,7 +100,7 @@ export class SubjectsComponent {
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Exito',
-                    detail: 'Curso creado correctamente',
+                    detail: 'Área creado correctamente',
                     key: 'main'
                 });
                 this.fetchAreas();
@@ -123,9 +108,9 @@ export class SubjectsComponent {
         });
     }
 
-    showUpdateEntity(area:Area): void {
+    showUpdateEntity(area: Area): void {
         this.ref = this.dialogService.open(SubjectComponent, {
-            header: 'Editar curso',
+            header: 'Editar área',
             data: {
                 mode: 'update',
                 entity: area
@@ -134,7 +119,7 @@ export class SubjectsComponent {
                 '960px': '75vw',
                 '640px': '90vw'
             },
-            width:'30vw',
+            width: '30vw',
             modal: true,
             closable: true
         });
@@ -144,7 +129,7 @@ export class SubjectsComponent {
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Exito',
-                    detail: 'Curso actualizao correctamente',
+                    detail: 'Área actualizada correctamente',
                     key: 'main'
                 });
                 this.fetchAreas();
@@ -152,9 +137,9 @@ export class SubjectsComponent {
         });
     }
 
-    showDelete(area:Area):void {
+    showDelete(area: Area): void {
         this.ref = this.dialogService.open(SubjectComponent, {
-            header: 'Eliminar curso',
+            header: 'Eliminar área',
             data: {
                 mode: 'delete',
                 entity: area
@@ -163,7 +148,7 @@ export class SubjectsComponent {
                 '960px': '75vw',
                 '640px': '90vw'
             },
-            width:'30vw',
+            width: '30vw',
             modal: true,
             closable: true
         });
@@ -173,7 +158,7 @@ export class SubjectsComponent {
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Exito',
-                    detail: 'Curso eliminado correctamente',
+                    detail: 'Área eliminado correctamente',
                     key: 'main'
                 });
                 this.fetchAreas();
@@ -186,13 +171,13 @@ export class SubjectsComponent {
             this.entitiesFilter.page = event.first / event.rows;
         }
 
-        if(this.filteredEntities){
+        if (this.filteredEntities) {
             let filterForm = this.entitiesFilterForm.value;
 
-            if(filterForm.text != null){
+            if (filterForm.text != null) {
                 this.entitiesFilter.text = filterForm.text;
             }
-            if(filterForm.state != null){
+            if (filterForm.state != null) {
                 this.entitiesFilter.state = filterForm.state;
             }
         }
@@ -217,8 +202,7 @@ export class SubjectsComponent {
                 this.areas = res.areas;
                 this.meta = res.meta;
             }
-        })
-
+        });
     }
 
     private buildEntitiesFilterForm(): void {
@@ -228,5 +212,4 @@ export class SubjectsComponent {
             area: [null]
         });
     }
-
 }

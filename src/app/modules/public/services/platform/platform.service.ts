@@ -13,7 +13,7 @@ import { Platform } from '../../interfaces/platform';
 })
 export class PlatformService {
     private http:HttpClient = inject(HttpClient);
-    private uesPlayApi:string =`${environment.UesPlayApi}/uesplay/catalogs/platforms`;
+    private uesPlayApi:string =`${environment.UesPlayApi}/platforms`;
 
     constructor() { }
 

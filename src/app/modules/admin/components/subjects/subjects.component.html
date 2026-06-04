@@ -2,7 +2,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h4 class="font-semibold text-xl mb-6">Cursos</h4>
+                <h4 class="font-semibold text-xl mb-6">Áreas</h4>
             </div>
             <div *ngIf="!loadingPage" class="card-body">
                 <p-table    #mainTable
@@ -57,10 +57,10 @@
                             </form>
 
                             <div>
-                                <p-button   *ngIf="permissions.includes('can.create.area')"
+                                <p-button   *ngIf="permissions.includes('can.create.areas')"
                                             (onClick)="showCreateEntity()"
                                             icon="pi pi-plus"
-                                            pTooltip="Registrar usuario"
+                                            pTooltip="Registrar área"
                                             [tooltipOptions]="tooltipOption"
                                             severity="secondary"
                                             variant="outlined"
@@ -73,10 +73,10 @@
 
                     <ng-template #header>
                         <tr>
-                            <th>Nombre del curso</th>
-                            <th>Descripcion</th>
+                            <th>Nombre del área</th>
+                            <th>Descripción</th>
                             <th>Estado</th>
-                            <th>Fecha de creacion</th>
+                            <th>Fecha de creación</th>
                             <th></th>
                         </tr>
                     </ng-template>
@@ -96,7 +96,7 @@
                                 {{ entity.updatedAt | date:'dd/MM/yyyy':'UTC-6' }}
                             </td>
                             <td class="text-center">
-                                <p-button   *ngIf="permissions.includes('can.update.area')"
+                                <p-button   *ngIf="permissions.includes('can.update.areas')"
                                             [disabled]="entity.isDefault"
                                             (onClick)="showUpdateEntity(entity)"
                                             [rounded]="true"
@@ -104,16 +104,16 @@
                                             [tooltipOptions]="tooltipOption"
                                             icon="pi pi-pencil"
                                             severity="secondary"
-                                            pTooltip="Actualizar curso"/>
+                                            pTooltip="Actualizar área"/>
                                 &nbsp;
-                                <p-button   *ngIf="permissions.includes('can.delete.area')"
+                                <p-button   *ngIf="permissions.includes('can.delete.areas')"
                                             (onClick)="showDelete(entity)"
                                             [rounded]="true"
                                             [outlined]="true"
                                             [tooltipOptions]="tooltipOption"
                                             icon="pi pi-trash"
                                             severity="danger"
-                                            pTooltip="Eliminar curso"/>
+                                            pTooltip="Eliminar área"/>
                             </td>
                         </tr>
                     </ng-template>

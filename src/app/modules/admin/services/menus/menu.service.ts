@@ -15,7 +15,7 @@ import { catchError } from 'rxjs/operators';
 
 export class MenuService {
     private httpClient:HttpClient = inject(HttpClient);
-    private uesPlayApi =`${environment.UesPlayApi}/admin/catalogs/menus`;
+    private uesPlayApi =`${environment.UesPlayApi}/admin/menus`;
 
     constructor() { }
 

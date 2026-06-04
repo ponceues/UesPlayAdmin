@@ -1,0 +1,16 @@
+
+::ng-deep .error-message-centered {
+    .p-message-wrapper {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100%;
+    }
+
+    .p-message-text {
+        display: block !important;
+        text-align: center !important;
+        width: 100%;
+    }
+}
+

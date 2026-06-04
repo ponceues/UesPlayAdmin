@@ -46,6 +46,37 @@ export class AuthService {
         ).pipe( catchError((err: HttpErrorResponse) => {return this.handleErrors(err)}) );
     }
 
+    sendResetPasswordRequest(request:any):Observable<any>{
+        let requestUrl: string = `${this.urlUesPlay}/recoveryrequest`;
+
+        return this.http.post<any>(
+            `${requestUrl}`,
+            request
+        ).pipe( catchError((err: HttpErrorResponse) => {return this.handleErrors(err)}) );
+    }
+
+    resetPassword(request:any):Observable<any>{
+        let requestUrl: string = `${this.urlUesPlay}/reset-password`;
+
+        return this.http.post<any>(
+            `${requestUrl}`,
+            request
+        ).pipe( catchError((err: HttpErrorResponse) => {return this.handleErrors(err)}) );
+    }
+
+    refreshToken(refreshToken: string): Observable<AuthToken> {
+        let requestUrl: string = `${this.urlUesPlay}/refresh`;
+
+        return this.http.post<AuthToken>(
+            `${requestUrl}`,
+            { refresh_token: refreshToken }
+        ).pipe(
+            catchError((err: HttpErrorResponse) => {
+                return this.handleErrors(err);
+            })
+        );
+    }
+
     private handleErrors(error: HttpErrorResponse): Observable<never>  {
         return throwError(()=>error.error);
     }

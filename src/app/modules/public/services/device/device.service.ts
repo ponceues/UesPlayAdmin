@@ -13,7 +13,7 @@ import { Device } from '../../interfaces/device';
 
 export class DeviceService {
     private http:HttpClient = inject(HttpClient);
-    private uesPlayApi =`${environment.UesPlayApi}/uesplay/catalogs/devices`;
+    private uesPlayApi =`${environment.UesPlayApi}/devices`;
 
     constructor() { }
 

@@ -76,7 +76,7 @@ export class MediaTypesComponent {
 
     ngOnInit() {
         this.loadInitialData();
-        this.permissions = this.appStorageService.getPermissions().filter(x=>x.includes('area'));
+        this.permissions = this.appStorageService.getPermissions().filter((x) => x.includes('mediatypes'));
         this.buildEntitiesFilterForm();
     }
 

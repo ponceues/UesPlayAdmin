@@ -1,9 +1,7 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
 export const tokenJwtInterceptor: HttpInterceptorFn = (req, next) => {
-    const excludedUrls = [
-        '/auth/login',
-    ];
+    const excludedUrls = ['/auth/login'];
     const shouldExclude = excludedUrls.some(url => req.url.includes(url));
 
     if (shouldExclude) {
@@ -12,7 +10,6 @@ export const tokenJwtInterceptor: HttpInterceptorFn = (req, next) => {
 
     const token = localStorage.getItem('authJwt');
     if(!token) {
-        console.log("token null " + req.url);
         return next(req);
     }
     let jwt = JSON.parse(token);

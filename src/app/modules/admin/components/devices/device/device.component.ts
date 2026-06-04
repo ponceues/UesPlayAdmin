@@ -1,7 +1,7 @@
 import { Component, Inject, inject } from '@angular/core';
 import { Button } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
-import { Message } from 'primeng/message';
+import { MessageModule } from 'primeng/message';
 import { NgForOf, NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TextareaModule } from 'primeng/textarea';
@@ -16,7 +16,7 @@ import { Device } from '@admin/interfaces/device';
 
 @Component({
     selector: 'app-devices',
-    imports: [Button, InputText, Message, NgIf, ReactiveFormsModule, Tooltip, TextareaModule, ToggleSwitchModule, ToggleButton, NgForOf],
+    imports: [Button, InputText, MessageModule, NgIf, ReactiveFormsModule, Tooltip, TextareaModule, ToggleSwitchModule, ToggleButton, NgForOf],
     templateUrl: './device.component.html',
     styleUrl: './device.component.scss'
 })
@@ -53,7 +53,7 @@ export class DeviceComponent {
                 this.httpLoading = false;
                 this.dialogRef.close(data);
             },
-            error: (error) => {
+            error: () => {
                 this.httpLoading = false;
             }
         });
@@ -72,7 +72,7 @@ export class DeviceComponent {
                 this.httpLoading = false;
                 this.dialogRef.close(data);
             },
-            error: (error) => {
+            error: () => {
                 this.httpLoading = false;
             }
         });
@@ -86,7 +86,7 @@ export class DeviceComponent {
                 this.httpLoading = false;
                 this.dialogRef.close(data);
             },
-            error: (error) => {
+            error: () => {
                 this.httpLoading = false;
             }
         });

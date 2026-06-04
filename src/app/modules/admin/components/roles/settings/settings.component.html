@@ -10,14 +10,8 @@
                 </h4>
             </div>
             <div class="card-body">
-                <div class="card-section mb-3 mt-3" *ngIf="!loadingMenus">
-                    <p-message severity="warn" [closable]="true">
-                        <ng-template #icon>
-                            <i class="pi pi-info-circle text-3xl"></i>
-                        </ng-template>
-                        <span class="ml-2">Puesdes arrastrar los menus de la parte izquierda para asignarlos al rol {{selectedRol.name}}.</span>
-                    </p-message>
-                </div>
+
+
                 <div class="card-section mb-3" *ngIf="!loadingMenus">
                     <p-picklist (onMoveToTarget)="addMenu($event)"
                                 (onMoveToSource)="removeMenu($event)"
@@ -47,8 +41,14 @@
 
                         </ng-template>
                     </p-picklist>
-
+                    <br>
+                    <small>
+                        Los menus en la parte derecha apareceran en el menu lateral del sistema,
+                        cada menu requiere permisos especiales para el usuario, asigna aquellos
+                        menus que deseas que el rol pueda visualizar.
+                    </small>
                 </div>
+
                 <div class="card-section"*ngIf="loadingMenus">
                     <app-picklist-skeleton ></app-picklist-skeleton>
                 </div>
@@ -56,14 +56,18 @@
         </div>
 
         <div class="card">
-            <div class="card-header pb-3" *ngIf="loadingPermissions">
-                <p-skeleton width="15rem" height="3rem"></p-skeleton>
-            </div>
-            <div class="card-header pb-3" *ngIf="!loadingPermissions">
-                <h4 class="font-semibold text-xl">
-                    <i class="pi pi-verified"></i> &nbsp; Permisos asignados al rol {{selectedRol.name.toLowerCase()}}
-                </h4>
-            </div>
+            @if(!loadingPermissions){
+                <div class="card-header pb-3">
+                    <h4 class="font-semibold text-xl">
+                        <i class="pi pi-verified"></i> &nbsp; Permisos asignados al rol {{selectedRol.name.toLowerCase()}}
+                    </h4>
+                </div>
+            }@else{
+                <div class="card-header pb-3">
+                    <p-skeleton width="15rem" height="3rem"></p-skeleton>
+                </div>
+            }
+
             <div class="card-body">
                 <div class="card-section mb-3" *ngIf="!loadingPermissions">
                     <p-picklist (onMoveToTarget)="addPermission($event)"
@@ -93,6 +97,11 @@
                             </div>
                         </ng-template>
                     </p-picklist>
+                    <br>
+                    <small>
+                        Cada permiso asignado al rol le permitira realizar acciones específicas dentro del sistema,
+                        asigna aquellos permisos que deseas que el rol pueda ejecutar.
+                    </small>
                 </div>
                 <div class="card-section mb-3"*ngIf="loadingPermissions">
                     <app-picklist-skeleton ></app-picklist-skeleton>

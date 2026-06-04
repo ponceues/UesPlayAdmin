@@ -22,7 +22,17 @@ import {
     ListChevronsDownUpIcon,
     MessageSquare,
     BadgeCheck,
-    Settings
+    Settings,
+    LogIn,
+    Cog,
+    ShoppingCart,
+    Users,
+    Package,
+    LayoutGrid,
+    Folder,
+    Cpu,
+    Monitor,
+    Tags
 } from 'lucide-angular';
 
 const icons = {
@@ -41,7 +51,17 @@ const icons = {
     ListChevronsDownUpIcon,
     MessageSquare,
     BadgeCheck,
-    Settings
+    Settings,
+    LogIn,
+    Cog,
+    ShoppingCart,
+    Users,
+    Package,
+    LayoutGrid,
+    Folder,
+    Cpu,
+    Monitor,
+    Tags
 };
 
 @NgModule({

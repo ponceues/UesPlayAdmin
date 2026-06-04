@@ -1,9 +1,10 @@
 export  interface License {
-    licenceId:string;
-    name:string;
-    version:string;
-    description:string;
-    enabled:string;
-    createdAt:Date;
-    updatedAt:Date;
+    licenceId: string;
+    licenseId : string;
+    name: string;
+    version: string;
+    description: string;
+    enabled: string;
+    createdAt: Date;
+    updatedAt: Date;
 }

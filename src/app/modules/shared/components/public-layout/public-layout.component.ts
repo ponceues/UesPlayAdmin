@@ -7,20 +7,13 @@ import { ResourceType} from '@public/interfaces/resource-type';
 import { LayoutService } from '@public/services/layaut/layout.service';
 import { EResourceType } from   '@public/enums/resource-type-enum';
 import { AppConfigurator } from '../../../../layout/component/app.configurator';
+import { SharedModule } from '@shared/shared.module';
 
 @Component({
     selector: 'app-public-layout',
-    imports: [
-        RouterLink,
-        NgForOf,
-        RouterOutlet,
-        NgClass,
-        NgIf,
-        AppConfigurator
-    ],
+    imports: [RouterLink, NgForOf, RouterOutlet, NgClass, NgIf, AppConfigurator, SharedModule],
     templateUrl: './public-layout.component.html',
-    styleUrl: './public-layout.component.scss',
-    standalone: true
+    styleUrl: './public-layout.component.scss'
 })
 export class PublicLayoutComponent implements OnInit {
     private resourceTypeService: ResourceTypeService = inject(ResourceTypeService);
