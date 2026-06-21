@@ -7,6 +7,12 @@
         width: 100%;
     }
 
+    .p-message-icon {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
     .p-message-text {
         display: block !important;
         text-align: center !important;

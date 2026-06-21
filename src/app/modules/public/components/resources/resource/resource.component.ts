@@ -11,7 +11,6 @@ import { TableModule } from 'primeng/table';
 import { SharedModule } from '@shared/shared.module';
 import { Filter } from '@shared/interfaces/filter';
 import { ResourceFile }  from '@public/interfaces/ResourceFile';
-import { Ripple } from 'primeng/ripple';
 import { FooterComponent } from '@shared/components/footer/footer.component';
 import { Tooltip } from 'primeng/tooltip';
 import { Dialog } from 'primeng/dialog';
@@ -20,6 +19,8 @@ import { InputText } from 'primeng/inputtext';
 import { Rating } from 'primeng/rating';
 import { TextareaModule } from 'primeng/textarea';
 import { MessageService } from 'primeng/api';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { GalleriaModule } from 'primeng/galleria';
 
 @Component({
   selector: 'app-resource',
@@ -32,7 +33,6 @@ import { MessageService } from 'primeng/api';
         TableModule,
         Chip,
         SharedModule,
-        Ripple,
         FooterComponent,
         Tooltip,
         DatePipe,
@@ -40,29 +40,35 @@ import { MessageService } from 'primeng/api';
         ReactiveFormsModule,
         InputText,
         Rating,
-        TextareaModule
+        TextareaModule,
+        GalleriaModule
     ],
   templateUrl: './resource.component.html',
   styleUrl: './resource.component.scss'
 })
 
 export class ResourceComponent {
+    @ViewChild('nameInput') nameInput!: ElementRef;
     private route: ActivatedRoute = inject(ActivatedRoute);
     private resourceService: ResourcesService = inject(ResourcesService);
     private formBuilder = inject(FormBuilder);
     private messageService: MessageService = inject(MessageService);
-
+    private sanitizer: DomSanitizer = inject(DomSanitizer);
 
     resource!:Resource;
     avatar!:ResourceFile;
     banner!:ResourceFile;
     resourceImages:any[]=[];
+    resourceVideos:any[]=[];
     relatedResources: Resource[]=[];
 
-    @ViewChild('nameInput') nameInput!: ElementRef;
+
     loadingComments: boolean = false;
     comments:any[]=[];
     showCreateDialog:boolean = false;
+    // Video modal state
+    showVideoModal: boolean = false;
+    selectedVideo: any | null = null;
     commentForm!: FormGroup;
     httpLoading: boolean = false;
 
@@ -78,6 +84,7 @@ export class ResourceComponent {
             next: (res) => {
                 this.resource = res;
                 this.resourceImages = res.files.filter(x => x.option === 'media' && x.type === 'image' );
+                this.resourceVideos = res.files.filter(x => x.option === 'media' && x.type === 'video' );
                 this.avatar = res.files.filter(x=>x.option === 'avatar')[0];
                 this.banner = res.files.filter(x=>x.option === 'banner')[0];
                 this.fetchRelatedResources();
@@ -122,7 +129,6 @@ export class ResourceComponent {
                 this.fetchComments();
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Completado',
                     detail: 'Comentario agregado correctamente, se envio para su revisión.',
                     key: 'main'
                 });
@@ -131,6 +137,10 @@ export class ResourceComponent {
                 this.httpLoading = false;
             }
         })
+    }
+
+    getSafeUrl(url: string): SafeUrl {
+        return this.sanitizer.bypassSecurityTrustUrl(url);
     }
 
     downloadVersion(): void {
@@ -191,4 +201,14 @@ export class ResourceComponent {
             console.log("Input focused");
         }, 200);
     }
-}
+
+    openVideoModal(video: any): void {
+        this.selectedVideo = video;
+        this.showVideoModal = true;
+    }
+
+    closeVideoModal(): void {
+        this.showVideoModal = false;
+        this.selectedVideo = null;
+    }
+ }

@@ -259,6 +259,7 @@
                         <div class="field col-6">
                             <label for="typeId">Tipo de recurso</label>
                             <p-select [options]="resourceTypes"
+                                      (onChange)="setResourceType($event.value)"
                                       appendTo="body"
                                       optionLabel="name"
                                       optionValue="typeId"
@@ -275,6 +276,46 @@
                                 </p-message>
                             </div>
                         </div>
+                        @if(selectedType != null){
+                            <div class="field col-6">
+                                <label for="typeId">Tipo de multimedia</label>
+                                <p-select [options]="mediaTypes"
+                                          (onChange)="updateGenres($event.value)"
+                                          optionLabel="name"
+                                          optionValue="typeId"
+                                          formControlName="mediaTypeId"
+                                          placeholder="Seleccione tipo de multimedia"
+                                          class="w-full" >
+                                </p-select>
+                                <div *ngIf="createform.get('mediaTypeId')?.invalid && createform.get('mediaTypeId')?.dirty || createform.get('mediaTypeId')?.touched">
+                                    <p-message  *ngIf="createform.hasError('required','mediaTypeId')"
+                                                severity="error"
+                                                variant="simple"
+                                                size="small">
+                                        Selecione tipo de multimedia
+                                    </p-message>
+                                </div>
+                            </div>
+                            <div class="field col-6">
+                                <label for="typeId">Genero de multimedia</label>
+                                <p-select [options]="genres"
+                                          optionLabel="name"
+                                          optionValue="genreId"
+                                          formControlName="genreId"
+                                          placeholder="Seleccione genero"
+                                          class="w-full" >
+                                </p-select>
+                                <div *ngIf="createform.get('genreId')?.invalid && createform.get('genreId')?.dirty || createform.get('genreId')?.touched">
+                                    <p-message  *ngIf="createform.hasError('required','genreId')"
+                                                severity="error"
+                                                variant="simple"
+                                                size="small">
+                                        Selecione genero de multimedia
+                                    </p-message>
+                                </div>
+                            </div>
+                        }
+
                         <div class="col-12">
                             <label for="description">Descripcion</label>
                             <textarea pTextarea

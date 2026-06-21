@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { NgClass, NgForOf, NgIf, NgOptimizedImage } from '@angular/common';
 import {forkJoin} from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -28,6 +28,8 @@ import { MediaType } from '@public/interfaces/media-type';
 import { Select } from 'primeng/select';
 import { MediaGenre } from '@public/interfaces/media-genre';
 import { FormsModule } from '@angular/forms';
+import { SharedModule } from '@shared/shared.module';
+
 
 
 @Component({
@@ -45,7 +47,9 @@ import { FormsModule } from '@angular/forms';
         ResourcesSkeletonComponent,
         FooterComponent,
         Select,
-        FormsModule
+        FormsModule,
+        SharedModule,
+        NgOptimizedImage,
     ],
     templateUrl: './resources.component.html',
     styleUrl: './resources.component.scss'
@@ -68,6 +72,7 @@ export class ResourcesComponent implements OnInit {
     selectedPlatform: Platform | null = null;
     selectedDevice: Device|null = null;
     selectedMediaType:MediaType|null = null;
+    selectedGenre: MediaGenre|null = null;
     resources:Resource[]=[];
     loadingResources: boolean=true;
     types:MediaType[]=[];
@@ -119,6 +124,7 @@ export class ResourcesComponent implements OnInit {
     }
 
     fetchResources():void {
+        console.log(this.selectedGenre);
         this.loadingResources = true;
         let quickFilter = new Filter();
         quickFilter.typeId = this.selectedType!.typeId;
@@ -130,6 +136,11 @@ export class ResourcesComponent implements OnInit {
         if(this.selectedPlatform !== null){
             quickFilter.platformId = this.selectedPlatform.platformId;
         }
+
+        if(this.selectedGenre !== null){
+            quickFilter.genreId = this.selectedGenre.genreId;
+        }
+
 
         this.resourceService.search(quickFilter).subscribe({
             next: response => {

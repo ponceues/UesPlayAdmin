@@ -29,6 +29,7 @@
                     <p-select [options]="areas"
                               optionLabel="name"
                               appendTo="body"
+                              readonly
                               formControlName="areaId"
                               optionValue="areaId"
                               placeholder="Seleccione area"
@@ -44,9 +45,10 @@
                 </div>
 
                 <div class="field col-6">
-                    <label for="typeId">Tipo de recurso</label>
+                    <label for="typeId">Tipo de recurso *</label>
                     <p-select [options]="resourceTypes"
                               appendTo="body"
+                              readonly
                               optionLabel="name"
                               optionValue="typeId"
                               formControlName="typeId"
@@ -62,6 +64,48 @@
                         </p-message>
                     </div>
                 </div>
+                @if(selectedResource.mediaTypeId != null){
+                    <div class="field col-6">
+                        <label for="typeId">Tipo de multimedia</label>
+                        <p-select [options]="mediaTypes"
+                                  readonly
+                                  optionLabel="name"
+                                  optionValue="typeId"
+                                  formControlName="mediaTypeId"
+                                  placeholder="Seleccione tipo de multimedia"
+                                  class="w-full" >
+                        </p-select>
+                        <div *ngIf="resourceForm.get('mediaTypeId')?.invalid && resourceForm.get('mediaTypeId')?.dirty || resourceForm.get('mediaTypeId')?.touched">
+                            <p-message  *ngIf="resourceForm.hasError('required','mediaTypeId')"
+                                        severity="error"
+                                        variant="simple"
+                                        size="small">
+                                Selecione tipo de multimedia
+                            </p-message>
+                        </div>
+                    </div>
+                    <div class="field col-6">
+                        <label for="typeId">Genero de multimedia</label>
+                        <p-select [options]="genres"
+                                  readonly
+                                  optionLabel="name"
+                                  optionValue="genreId"
+                                  formControlName="genreId"
+                                  placeholder="Seleccione genero"
+                                  class="w-full" >
+                        </p-select>
+                        <div *ngIf="resourceForm.get('genreId')?.invalid && resourceForm.get('genreId')?.dirty || resourceForm.get('genreId')?.touched">
+                            <p-message  *ngIf="resourceForm.hasError('required','genreId')"
+                                        severity="error"
+                                        variant="simple"
+                                        size="small">
+                                Selecione genero de multimedia
+                            </p-message>
+                        </div>
+                    </div>
+                }
+
+
                 <div class="col-12 field">
                     <label for="description">Descripcion</label>
                     <textarea pTextarea
@@ -536,7 +580,7 @@
                                   [showCancelButton]="false"
                                   [chooseButtonProps]="{size:'small'}"
                                   accept=".zip,.rar"
-                                  maxFileSize="1000000"
+                                  [maxFileSize]="31000000"
                                   mode="advanced">
                         <ng-template #empty>
                             <div>Seleccione el archivo comprimido.</div>
@@ -592,7 +636,7 @@
                                   [showCancelButton]="false"
                                   [chooseButtonProps]="{size:'small',label:'Seleccione'}"
                                   accept="image/*,video/*"
-                                  maxFileSize="1000000"
+                                  [maxFileSize]="52428800"
                                   mode="advanced">
                         <ng-template #empty>
                             <div>Seleccione imagen/video.</div>

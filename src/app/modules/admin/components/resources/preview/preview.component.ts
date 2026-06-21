@@ -21,21 +21,7 @@ import { MenuItem } from 'primeng/api';
 
 @Component({
     selector: 'app-preview',
-    imports: [
-        Avatar,
-        Button,
-        Carousel,
-        Chip,
-        FooterComponent,
-        LucideAngularModule,
-        NgForOf,
-        NgIf,
-        Ripple,
-        Tooltip,
-        SharedModule,
-        DatePipe,
-        Menu
-    ],
+    imports: [Avatar, Button, Carousel, Chip, FooterComponent, LucideAngularModule, NgForOf, NgIf, Ripple, Tooltip, SharedModule, DatePipe, Menu],
     templateUrl: './preview.component.html',
     styleUrl: './preview.component.scss'
 })
@@ -48,9 +34,13 @@ export class PreviewComponent implements OnInit {
     avatar!: ResourceFile;
     banner!: ResourceFile;
     resourceImages: any[] = [];
+    resourceVideos: any[] = [];
     comments: Comment[] = [];
     relatedResources: Resource[] = [];
     commentMenusCache: Map<string, MenuItem[]> = new Map();
+
+    showVideoModal: boolean = false;
+    selectedVideo: any | null = null;
 
     ngOnInit() {
         const resourceId = this.route.snapshot.queryParams['resourceId'];
@@ -111,6 +101,7 @@ export class PreviewComponent implements OnInit {
             next: (res) => {
                 this.resource = res;
                 this.resourceImages = res.files.filter((x) => x.option === 'media' && x.type === 'image');
+                this.resourceVideos = res.files.filter((x) => x.option === 'media' && x.type === 'video');
                 this.avatar = res.files.filter((x) => x.option === 'avatar')[0];
                 this.banner = res.files.filter((x) => x.option === 'banner')[0];
                 this.fetchRelatedResources();
@@ -179,7 +170,7 @@ export class PreviewComponent implements OnInit {
         return avatarFile?.url || 'assets/icons/default-avatar.png';
     }
 
-    updateComment(comment: Comment, state: 'REJECTED'|'PUBLISHED'): void {
+    updateComment(comment: Comment, state: 'REJECTED' | 'PUBLISHED'): void {
         comment.status = state;
         this.commentService.update(comment, this.resource.resourceId).subscribe({
             next: () => {
@@ -193,4 +184,13 @@ export class PreviewComponent implements OnInit {
         menu.toggle(event);
     }
 
+    openVideoModal(video: any): void {
+        this.selectedVideo = video;
+        this.showVideoModal = true;
+    }
+
+    closeVideoModal(): void {
+        this.showVideoModal = false;
+        this.selectedVideo = null;
+    }
 }

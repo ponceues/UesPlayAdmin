@@ -9,6 +9,8 @@ export interface Resource {
     typeId: string;
     areaId: string;
     stateId: string;
+    mediaTypeId: string;
+    genreId: string;
     title: string;
     description: string;
     downloads: number;

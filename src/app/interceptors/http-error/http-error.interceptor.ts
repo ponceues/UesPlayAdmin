@@ -44,7 +44,6 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
             if (shouldShowToast) {
                 messageService.add({
                     severity: severity,
-                    summary: title,
                     detail: message,
                     key:'main'
                 });

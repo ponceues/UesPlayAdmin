@@ -42,6 +42,9 @@ import { LucideAngularModule } from 'lucide-angular';
 import { License } from '@admin/interfaces/license';
 import { CommonsService } from '@admin/services/commons/commons.service';
 import { AppStorageService } from '@shared/services/app-storage/app-storage.service';
+import { MediaType } from '@public/interfaces/media-type';
+import { MediaGenre } from '@public/interfaces/media-genre';
+import { CatalogService } from '@public/services/catalogs/catalog.service';
 
 
 @Component({
@@ -62,6 +65,7 @@ export class ResourceComponent {
     private resourceStateService: ResourceStateService = inject(ResourceStateService);
     private commonService: CommonsService = inject(CommonsService);
     private appStorageService: AppStorageService = inject(AppStorageService);
+    private catalogsService:CatalogService = inject(CatalogService);
 
     @ViewChild('resourceFileUpload') resourceFileUpload!: FileUpload;
     permissions: string[] = [];
@@ -74,7 +78,8 @@ export class ResourceComponent {
     loadingPage: boolean = true;
     loadingAuthors: boolean = true;
     licenses: License[] = [];
-
+    mediaTypes:MediaType[] = [];
+    genres:MediaGenre[] = [];
     authors: Author[] = [];
     authorForm!: FormGroup;
     showAuthorModal: boolean = false;
@@ -119,8 +124,7 @@ export class ResourceComponent {
                 this.httpLoading = false;
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Solicitud completa',
-                    detail: 'Datos del recurso actualizado con exito',
+                    detail: 'Recurso actualizado con exito',
                     key: 'main'
                 });
             },
@@ -271,7 +275,6 @@ export class ResourceComponent {
                 this.fetchFiles();
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Completado',
                     detail: 'Archivo eliminado con exito',
                     key: 'main'
                 });
@@ -313,13 +316,17 @@ export class ResourceComponent {
             resourceTypes: this.resourceTypeService.fetchByFilter(quickFilter),
             resource: this.resourceService.find(resourceId),
             resourceStates: this.resourceStateService.fetch(quickFilter),
-            licensesRes: this.commonService.listLicences(quickFilter)
+            licensesRes: this.commonService.listLicences(quickFilter),
+            mediaTypeRes: this.catalogsService.fetchMediaTypes(quickFilter),
+            genreRes: this.catalogsService.fetchMediaGenres(quickFilter)
         }).subscribe({
-            next: ({ areas, resourceTypes, resource, resourceStates, licensesRes }) => {
+            next: ({ areas, resourceTypes, resource, resourceStates, licensesRes,mediaTypeRes,genreRes }) => {
                 this.areas = areas.areas;
                 this.resourceTypes = resourceTypes.types;
                 this.selectedResource = resource;
                 this.resourceStates = resourceStates.states;
+                this.mediaTypes = mediaTypeRes.mediaTypes;
+                this.genres = genreRes.mediaGenres;
                 this.loadingPage = false;
                 this.buildCreateForm();
                 this.fetchAuthors();
@@ -417,9 +424,11 @@ export class ResourceComponent {
     private buildCreateForm(): void {
         this.resourceForm = this.formBuilder.group({
             typeId: [this.selectedResource.typeId, [Validators.required]],
-            areaId: [{ value: this.selectedResource.areaId, disabled: true }, [Validators.required]],
+            areaId: [this.selectedResource.areaId , [Validators.required]],
             title: [this.selectedResource.title, [Validators.required]],
-            description: [this.selectedResource.description, [Validators.required]]
+            description: [this.selectedResource.description, [Validators.required]],
+            mediaTypeId: [this.selectedResource.mediaTypeId,[Validators.required]],
+            genreId:[this.selectedResource.genreId,[Validators.required]]
         });
     }
 

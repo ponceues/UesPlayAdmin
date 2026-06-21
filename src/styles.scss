@@ -182,3 +182,20 @@ body {
 .p-panel-title{
     font-size: 20px;
 }
+
+// Centrar icono verticalmente en mensajes
+::ng-deep .p-message {
+    .p-message-wrapper {
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    .p-message-icon {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: 100%;
+        min-width: fit-content;
+    }
+}
+

@@ -32,7 +32,8 @@ import {
     Folder,
     Cpu,
     Monitor,
-    Tags
+    Tags,
+    FolderSearch
 } from 'lucide-angular';
 
 const icons = {
@@ -61,7 +62,8 @@ const icons = {
     Folder,
     Cpu,
     Monitor,
-    Tags
+    Tags,
+    FolderSearch
 };
 
 @NgModule({

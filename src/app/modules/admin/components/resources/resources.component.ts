@@ -32,6 +32,9 @@ import { Textarea } from 'primeng/textarea';
 import { ResourceState } from '@admin/interfaces/resource-state';
 import { ResourceStateService } from '@admin/services/resource-states/resource-state.service';
 import { AppStorageService } from '@shared/services/app-storage/app-storage.service';
+import { CatalogService } from '@public/services/catalogs/catalog.service';
+import { MediaGenre } from '@public/interfaces/media-genre';
+import { MediaType } from '@public/interfaces/media-type';
 
 @Component({
     selector: 'app-resources',
@@ -67,12 +70,17 @@ export class ResourcesComponent {
     private resourceTypeService: ResourceTypeService = inject(ResourceTypeService);
     private resourceStateService: ResourceStateService = inject(ResourceStateService);
     private appStorageService: AppStorageService = inject(AppStorageService);
+    private catalogService: CatalogService = inject(CatalogService);
 
-    permissions: string[] =[];
+    permissions: string[] = [];
     resourceStatesEnum = ResourceStatesEnum;
     loadingPage: boolean = true;
     resources: Resource[] = [];
+    mediaGenres: MediaGenre[] = [];
+    mediaTypes: MediaType[] = [];
     filter: Filter = new Filter();
+    genres : MediaGenre[] = [];
+    selectedType : ResourceType| null = null;
 
     meta!: Meta;
     filterForm!: FormGroup;
@@ -86,24 +94,22 @@ export class ResourcesComponent {
     createform!: FormGroup;
     showCreate: boolean = false;
 
-    selectedResource:Resource|null = null;
-    resourceStates : ResourceState[] = [];
+    selectedResource: Resource | null = null;
+    resourceStates: ResourceState[] = [];
     showStateModal: boolean = false;
-    selectedState:ResourceState|null = null;
+    selectedState: ResourceState | null = null;
     loadingStates: boolean = true;
 
     constructor(
         @Inject('DefaultTooltipOptions') public tooltipOption: TooltipOptions,
         private messageService: MessageService
-    ) {
-
-    }
+    ) {}
 
     ngOnInit() {
         this.loadComponentData();
         this.buildFilterForm();
         this.loadAreas();
-        this.permissions = this.appStorageService.getPermissions().filter(x=>x.includes('resources'));
+        this.permissions = this.appStorageService.getPermissions().filter((x) => x.includes('resources'));
     }
 
     loadComponentData(): void {
@@ -114,14 +120,18 @@ export class ResourcesComponent {
         forkJoin({
             resourceTypes: this.resourceTypeService.fetchByFilter(filter),
             resources: this.resourceService.fetch(this.filter),
-            statesRequest: this.resourceStateService.fetch(filter)
+            statesRequest: this.resourceStateService.fetch(filter),
+            mediaTypesRequest: this.catalogService.fetchMediaTypes(filter),
+            mediaGenresRequest: this.catalogService.fetchMediaGenres(filter)
         }).subscribe({
-            next: ({ resourceTypes, resources, statesRequest }) => {
+            next: ({ resourceTypes, resources, statesRequest, mediaTypesRequest, mediaGenresRequest }) => {
                 this.resourceStates = statesRequest.states;
                 this.resourceTypes = resourceTypes.types;
                 this.resources = resources.resources;
-                this.meta = resources.meta;
+                this.mediaGenres  = mediaGenresRequest.mediaGenres;
+                this.mediaTypes = mediaTypesRequest.mediaTypes;
                 this.loadingPage = false;
+                this.meta = resources.meta;
                 this.buildCreateForm();
             },
             error: () => {
@@ -162,15 +172,18 @@ export class ResourcesComponent {
 
     cleanCreateModal(): void {
         this.createform.reset();
+        this.createform.get('genreId')?.setValue(null);
+        this.createform.get('mediaTypeId')?.setValue(null);
+        this.selectedType = null;
     }
 
-    showUpdateState(entity:Resource):void{
+    showUpdateState(entity: Resource): void {
         this.selectedResource = entity;
         this.selectedState = this.selectedResource.state;
         this.showStateModal = true;
     }
 
-    updateResourceState():void{
+    updateResourceState(): void {
         this.httpLoading = true;
         let request = this.selectedResource;
         request!.state = this.selectedState;
@@ -184,12 +197,11 @@ export class ResourcesComponent {
                     severity: 'success',
                     summary: 'Success',
                     detail: 'Recurso actualizado con exito',
-                    key:'main'
-                })
+                    key: 'main'
+                });
                 this.fetchResources();
             }
-        })
-
+        });
     }
 
     fetchResources(event: any = null): void {
@@ -225,10 +237,30 @@ export class ResourcesComponent {
     }
 
     previewResource(entity: Resource): void {
-        // Abrir la URL en una pestaña nueva usando window.open
         const url = this.router.createUrlTree([`admin/recursos/preview`], { queryParams: { resourceId: entity.resourceId } }).toString();
         window.open(url, '_blank');
     }
+
+    setResourceType(resourceTypeId: string): void {
+        this.selectedType = null;
+        this.createform.get('genreId')?.setValue(null);
+        let resourceType = this.resourceTypes.find((x) => x.typeId === resourceTypeId);
+        if (resourceType?.code === 'MEDIA') {
+            const genderControl = this.createform.get('genreId');
+            const typeControl = this.createform.get('mediaTypeId');
+            genderControl?.setValidators([Validators.required]);
+            typeControl?.setValidators([Validators.required]);
+            genderControl?.updateValueAndValidity();
+            typeControl?.updateValueAndValidity();
+            this.selectedType = resourceType;
+        }
+    }
+
+    updateGenres(typeId:string): void {
+        this.createform.get('genreId')?.setValue(null);
+        this.genres = this.mediaGenres.filter((x) => x.mediaTypeId === typeId);
+    }
+
     //#region privates
     private fetchResourceStates(): void {
         this.loadingPage = true;
@@ -237,16 +269,16 @@ export class ResourcesComponent {
         this.resourceStateService.fetch(quickFilter).subscribe({
             next: (res) => {
                 this.resourceStates = res.states;
-                this.resourceStates = this.resourceStates.filter(x=>x.code !== this.resourceStatesEnum.Created);
+                this.resourceStates = this.resourceStates.filter((x) => x.code !== this.resourceStatesEnum.Created);
             }
         });
     }
 
-    private loadAreas():void{
+    private loadAreas(): void {
         try {
             let strArea = localStorage.getItem('areas');
             this.areas = JSON.parse(strArea!);
-        }catch(error){
+        } catch (error) {
             this.areas = [];
         }
     }
@@ -256,7 +288,9 @@ export class ResourcesComponent {
             typeId: [null, [Validators.required]],
             areaId: [null, [Validators.required]],
             title: [null, [Validators.required]],
-            description: [null, [Validators.required]]
+            description: [null, [Validators.required]],
+            genreId: [null],
+            mediaTypeId: [null]
         });
     }
 
@@ -264,7 +298,7 @@ export class ResourcesComponent {
         this.filterForm = this.formBuilder.group({
             stateId: [null],
             text: [null],
-            areaId:[null]
+            areaId: [null]
         });
 
         this.filterForm.valueChanges.subscribe((value) => {
@@ -272,5 +306,4 @@ export class ResourcesComponent {
         });
     }
     //#endregion
-
 }

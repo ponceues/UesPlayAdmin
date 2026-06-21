@@ -31,6 +31,10 @@ export class ResourcesService {
             requestUrl = `${requestUrl}&deviceId=${filter.deviceId}`;
         }
 
+        if(filter.genreId !== null){
+            requestUrl = `${requestUrl}&genreId=${filter.genreId}`;
+        }
+
         return this.http.get<Envelop<Resource>>(
             `${requestUrl}`
         ).pipe(

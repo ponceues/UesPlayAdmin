@@ -1,107 +1,121 @@
 <div class="up-main-container" style="margin-top: 56px;padding-top: 1rem; min-height: 100vh;" >
-    <div class="grid flex justify-content-center mt-3">
-        <div *ngIf="!loadingPage" class="col-12 md:col-10 lg:col-10">
-            <div class="grid">
-                <div class="col-12 md:col-10 lg:col-10">
-                    <div class="grid flex justify-start"  *ngIf="selectedType?.code === resourceTypeEnum.Game" >
-                        <div class="pl-2 pr-2"   *ngFor="let device of devicesList">
-                            <p-chip (click)="setSelectedDevice(device)"
-                                    [ngClass]="{'up-chip':true, 'active': selectedDevice?.deviceId === device.deviceId}"
-                                    label="{{device.name}}"
-                                    icon="{{device.icon}}" />
+    <div class="grid justify-content-center mt-3">
+        @if (!loadingPage){
+            <div class="col-12 md:col-10 lg:col-8">
+                <div class="grid">
+                    <div class="col-12 md:col-10 lg:col-10">
+                        <div class="grid justify-start"  *ngIf="selectedType?.code === resourceTypeEnum.Game" >
+                            <div class="pl-2 pr-2"   *ngFor="let device of devicesList">
+                                <p-chip (click)="setSelectedDevice(device)"
+                                        [ngClass]="{'up-chip':true, 'active': selectedDevice?.deviceId === device.deviceId}"
+                                        label="{{device.name}}"
+                                        icon="{{device.icon}}" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="grid flex justify-start" *ngIf="selectedType?.code === resourceTypeEnum.Multimedia">
-                        <p-select [options]="types"
-                                  [(ngModel)]="selectedMediaType"
-                                  (onChange)="onMediaTypeChange($event)"
-                                  styleClass="up-select-primary"
-                                  optionLabel="name"
-                                  placeholder="Todos los tipos"
-                                  showClear
-                                  class="md:w-56" />
-                        &nbsp;
-                        &nbsp;
-                        <p-select [options]="mediaGenres"
-                                  styleClass="up-select-primary"
-                                  optionLabel="name"
-                                  [disabled]="mediaGenres.length < 1"
-                                  placeholder="Todos los generos"
-                                  class="md:w-56" />
-                    </div>
-                    <div class="grid flex justify-start" *ngIf="selectedType?.code === resourceTypeEnum.Application">
-                        <div class="pl-2 pr-2"   *ngFor="let platform of platformsList">
-                            <p-chip (click)="setSelectedPlatform(platform)"
-                                    [ngClass]="{'up-chip':true, 'active': selectedPlatform?.platformId === platform.platformId}"
-                                    label="{{platform.name}}"
-                                    icon="{{platform.icon}}" />
+                        <div class="grid flex  justify-start" *ngIf="selectedType?.code === resourceTypeEnum.Multimedia">
+                            <p-select [options]="types"
+                                      [(ngModel)]="selectedMediaType"
+                                      (onChange)="onMediaTypeChange($event)"
+                                      styleClass="up-select-primary"
+                                      optionLabel="name"
+                                      placeholder="Todos los tipos"
+                                      showClear
+                                      class="md:w-56" />
+                            &nbsp;
+                            &nbsp;
+                            <p-select [options]="mediaGenres"
+                                      [disabled]="mediaGenres.length < 1"
+                                      [(ngModel)]="selectedGenre"
+                                      (onChange)="fetchResources()"
+                                      styleClass="up-select-primary"
+                                      optionLabel="name"
+                                      placeholder="Todos los generos"
+                                      class="md:w-56" />
+                        </div>
+                        <div class="grid flex  justify-start" *ngIf="selectedType?.code === resourceTypeEnum.Application">
+                            <div class="pl-2 pr-2"   *ngFor="let platform of platformsList">
+                                <p-chip (click)="setSelectedPlatform(platform)"
+                                        [ngClass]="{'up-chip':true, 'active': selectedPlatform?.platformId === platform.platformId}"
+                                        label="{{platform.name}}"
+                                        icon="{{platform.icon}}" />
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-
-        <div *ngIf="!loadingResources" class="col-12 md:col-10 lg:col-10">
-            <div class="grid">
-                <div class="col-12" *ngIf="selectedType?.code === resourceTypeEnum.Game">
-                    <h3>Juegos favoritos</h3>
-
-                </div>
-                <div class="col-12 " *ngIf="selectedType?.code === resourceTypeEnum.Application">
-                    <h3>Aplicationes mas descargadas</h3>
-                </div>
-            </div>
-
-            <div class="grid">
-                <div class="col-12 md:col-6 lg:col-4" *ngFor="let resource of resources">
-                    <div    (click)="goToResourceDetail(resource)"
-                            pRipple
-                            style="--p-ripple-background:  rgba(139,14,19,0.5);"
-                            class="up-card box shadow-none transition-duration-300 p-3 border-round-2xl">
-                        <p-card [style]="{ overflow: 'hidden', cursor:'pointer'}"
-                                styleClass="shadow-none">
-                            <ng-template #header>
-                                <img alt="Card" class="w-full" [src]="getResourceImage(resource,'banner')"/>
-                            </ng-template>
-                            <ng-template #content>
-                                <div class="grid">
-                                    <div class="col-fixed" style="width:60px !important;">
-                                        <p-avatar   styleClass="border-round-md"
-                                                    image="{{getResourceImage(resource,'avatar')}}"
-                                                    [style]="{ overflow: 'hidden' }"
-                                                    size="xlarge" />
-                                    </div>
-                                    <div class="col">
-                                        <div class="grid">
-                                            <div class="col-12 pl-3 pb-1">
-                                                <b style="color: var(--p-primary-color); font-size: 1rem;"> {{resource.title}}</b>
-
-                                            </div>
-                                            <div class="col-12  pl-3 pb-1">
-                                                <span class="flex align-content-center" style="text-align: center;">
-                                                    <b class="mr-2"> {{resource.rating.toFixed(1)}} </b>
+            <div  class="col-12 md:col-10 lg:col-8">
+                @if(resources.length === 0){
+                    <div class="flex justify-content-center flex-direction-row align-items-center w-full" style="min-height: 40vh;">
+                        <div class="flex flex-column align-items-center">
+                            <lucide-icon name="folder-search"
+                                         color="#94a3b8"
+                                         [size]="144">
+                            </lucide-icon>
+                            <small style="color:#94a3b8;font-size: 12px;" >
+                                No hemos encontrado recursos que mostrar.
+                            </small>
+                        </div>
+                    </div>
+                }@else{
+                    <div class="grid gap-3">
+                        <div    *ngFor="let resource of resources">
+                            <div    (click)="goToResourceDetail(resource)"
+                                    pRipple
+                                    style="--p-ripple-background:  rgba(139,14,19,0.5);max-width: 25rem;"
+                                    [style.max-width]="resource.type?.code === resourceTypeEnum.Multimedia ? '16rem' : '25rem'"
+                                    class="up-card box shadow-none transition-duration-300 p-2 border-round-sm">
+                                <p-card [style]="{ overflow: 'hidden', cursor:'pointer'}"
+                                        styleClass="shadow-none border-round-md">
+                                    <ng-template #header>
+                                        <img alt="card"
+                                             class="w-full"
+                                             [style.aspect-ratio]="resource.type?.code === resourceTypeEnum.Multimedia ? '2/3' : '2/1' "
+                                             src="{{getResourceImage(resource,'banner')}}" />
+                                    </ng-template>
+                                    <ng-template #content >
+                                        <div class="flex flex-row" style="height: 72px;">
+                                            @if (resource.type?.code != resourceTypeEnum.Multimedia) {
+                                                <div class="col-fixed"
+                                                     style="width:72px !important;">
+                                                    <p-avatar   styleClass="border-round-md"
+                                                                image="{{getResourceImage(resource,'avatar')}}"
+                                                                [style]="{ overflow: 'hidden' }"
+                                                                size="xlarge" />
+                                                </div>
+                                            }
+                                            <div class="flex flex-wrap align-content-center"
+                                                 style="height: 72px;">
+                                                <p class="mb-1 text-gray-600 font-bold font-italic"> {{resource.title}}</p>
+                                                <span class="flex w-full">
+                                                    <b class="mr-2 text-gray-600"> {{resource.rating.toFixed(1)}} </b>
                                                     <span class="flex">
                                                         <i *ngFor="let star of getStarsArray(resource.rating)"
                                                            [class]="star"
                                                            style="color: var(--p-primary-color); font-size: 1rem;"></i>
                                                     </span>
                                                 </span>
+
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </ng-template>
-                        </p-card>
+
+                                    </ng-template>
+                                </p-card>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                }
             </div>
-        </div>
+        }
+        @else{
+            <div class="col-12 md:col-10 lg:col-8">
+                <app-resources-skeleton></app-resources-skeleton>
+            </div>
+        }
 
-        <div *ngIf="loadingResources" class="col-12 md:col-10 lg:col-10">
-            <app-resources-skeleton></app-resources-skeleton>
-        </div>
+
+
+
+
     </div>
-
 </div>
 <app-footer></app-footer>

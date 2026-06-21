@@ -12,6 +12,7 @@ export class Filter {
     deviceId:string|null;
     stateId:string|null;
     enabled:boolean|null;
+    genreId:string|null;
 
     constructor() {
         this.page = 0;
@@ -27,5 +28,6 @@ export class Filter {
         this.deviceId = null;
         this.stateId = null;
         this.enabled = null;
+        this.genreId = null;
     }
 }

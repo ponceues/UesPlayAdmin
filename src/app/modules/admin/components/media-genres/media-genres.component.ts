@@ -73,7 +73,7 @@ export class MediaGenresComponent {
         });
 
 
-        this.permissions = this.appStorageService.getPermissions().filter((x) => x.includes('area'));
+        this.permissions = this.appStorageService.getPermissions().filter((x) => x.includes('genres'));
         this.buildEntitiesFilterForm();
     }
 
@@ -120,7 +120,6 @@ export class MediaGenresComponent {
             if (result) {
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Exito',
                     detail: 'Genero de multimedia creado correctamente',
                     key: 'main'
                 });
